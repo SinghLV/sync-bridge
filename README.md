@@ -3,7 +3,7 @@
 **Sync Bridge** is an offline-first disaster communication system powered by Edge AI (inspired by Gemini Nano). It is designed to function even when traditional network infrastructure collapses during emergencies like earthquakes, floods, or urban disasters.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Hackathon](https://img.shields.io/badge/Hackathon-Google%20Hackathon%202025-blue)](https://github.com/topics/hackathon)
+[![Hackathon](https://img.shields.io/badge/Hackathon-Google%20Hackathon%202026-blue)](https://github.com/topics/hackathon)
 
 ---
 
@@ -84,4 +84,4 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
 
-*Developed for the Google Hackathon 2025.*
+*Developed for the Google Hackathon 2026.*

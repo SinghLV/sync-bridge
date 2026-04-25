@@ -38,7 +38,7 @@ export default function App() {
           ))}
         </div>
         <div style={styles.navRight}>
-          <div style={styles.hackBadge}>🏆 Google Hackathon 2025</div>
+          <div style={styles.hackBadge}>🏆 Google Hackathon 2026</div>
         </div>
       </nav>
 
