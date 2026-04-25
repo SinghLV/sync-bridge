@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import VictimApp from './components/VictimApp.jsx';
-import RescueDashboard from './components/RescueDashboard.jsx';
+import VictimApp from './components/victim/VictimApp.jsx';
+import RescueDashboard from './components/rescue/RescueDashboard.jsx';
 
 export default function App() {
   const [view, setView]             = useState('split');     // split | victim | dashboard
