@@ -49,6 +49,7 @@ export default function App() {
           <div style={styles.hackBadge}>🏆 Google Hackathon 2026</div>
         </div>
       </nav>
+      )}
 
       {/* Demo Banner */}
       {!isStandalone && (
