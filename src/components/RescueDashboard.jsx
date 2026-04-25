@@ -1,109 +1,66 @@
-import React, { useState, useEffect } from 'react';
-import { getAllPackets, getQueueStats } from '../utils/offlineQueue.js';
-import { decodePacket } from '../utils/packetEncoder.js';
-import { SEVERITY_LABELS } from '../utils/classifier.js';
+import React from 'react';
 import MapView from './MapView.jsx';
 import EmergencyCard from './EmergencyCard.jsx';
+import { decodePacket } from '../utils/packetEncoder.js';
 
-export default function RescueDashboard({ refreshTrigger }) {
-  const [packets, setPackets]     = useState([]);
-  const [stats, setStats]         = useState({});
-  const [filter, setFilter]       = useState('all');
-  const [selected, setSelected]   = useState(null);
-  const [lastUpdate, setLastUpdate] = useState(new Date());
-
-  useEffect(() => {
-    refresh();
-  }, [refreshTrigger]);
-
-  // Poll for new data every 3s to catch live syncs
-  useEffect(() => {
-    const iv = setInterval(refresh, 3000);
-    return () => clearInterval(iv);
-  }, []);
-
-  function refresh() {
-    const all = getAllPackets();
-    setPackets(all);
-    setStats(getQueueStats());
-    setLastUpdate(new Date());
-  }
-
-  const filtered = filter === 'all' ? packets : packets.filter(p => p.severity === filter);
-  const critical  = packets.filter(p => p.severity === 'critical');
-  const urgent    = packets.filter(p => p.severity === 'urgent');
-  const safe      = packets.filter(p => p.severity === 'safe');
+export default function RescueDashboard({ packets = [] }) {
+  const stats = {
+    total: packets.length,
+    critical: packets.filter(p => p.severity === 'critical').length,
+    urgent: packets.filter(p => p.severity === 'urgent').length,
+    synced: packets.filter(p => p.synced).length,
+  };
 
   return (
-    <div style={styles.container}>
-      {/* Header */}
-      <div style={styles.header}>
-        <div>
-          <div style={styles.title}>
-            <span style={styles.titleIcon}>🛡</span>
-            <span>Rescue Operations Center</span>
-            <div style={styles.liveBadge}>
-              <span style={styles.liveDot} />
-              LIVE
+    <div style={S.container}>
+      <div style={S.header}>
+        <div style={S.titleArea}>
+          <div style={S.badge}>SAR OPERATIONS</div>
+          <h2 style={S.title}>Emergency Response Command</h2>
+          <div style={S.meta}>Network: Active · Bridge Nodes: 14 · Region: Sector-7</div>
+        </div>
+        <div style={S.clock}>{new Date().toLocaleTimeString()}</div>
+      </div>
+
+      <div style={S.statGrid}>
+        <StatCard label="TOTAL ALERTS" val={stats.total} icon="📡" />
+        <StatCard label="CRITICAL" val={stats.critical} icon="🔴" color="#ff3d55" />
+        <StatCard label="URGENT" val={stats.urgent} icon="🟠" color="#ff9500" />
+        <StatCard label="SYNCED" val={stats.synced} icon="✅" color="#30d158" />
+      </div>
+
+      <div style={S.mainGrid}>
+        <div style={S.mapSection}>
+          <div style={S.sectionLabel}>TACTICAL ZONE MAP</div>
+          <MapView incidents={packets} />
+          
+          <div style={S.logSection}>
+            <div style={S.sectionLabel}>RAW PACKET FEED</div>
+            <div style={S.logBox}>
+              {packets.slice(0, 10).map(p => (
+                <div key={p.id} style={S.logEntry}>
+                  <span style={S.logTime}>{new Date(p.ts).toLocaleTimeString([], { hour12: false })}</span>
+                  <span style={S.logPacket}>{p.packet}</span>
+                  <span style={S.logAction}>RECEIVED FROM BRIDGE_{p.id.slice(-4)}</span>
+                </div>
+              ))}
+              {packets.length === 0 && <div style={S.emptyLog}>Waiting for incoming packets...</div>}
             </div>
           </div>
-          <div style={styles.subtitle}>
-            Sync Bridge · Real-time Emergency Feed · Updated {formatTime(lastUpdate)}
-          </div>
         </div>
-        <button style={styles.refreshBtn} onClick={refresh}>↻ Refresh</button>
-      </div>
 
-      {/* Stats Row */}
-      <div style={styles.statsRow}>
-        <StatCard value={packets.length} label="Total Alerts" color="#4a9eff" icon="📡" />
-        <StatCard value={critical.length} label="Critical" color="#ff3d55" icon="🔴" onClick={() => setFilter('critical')} active={filter === 'critical'} />
-        <StatCard value={urgent.length}   label="Urgent"   color="#ff9500" icon="🟠" onClick={() => setFilter('urgent')}   active={filter === 'urgent'} />
-        <StatCard value={safe.length}     label="Safe"     color="#30d158" icon="🟢" onClick={() => setFilter('safe')}     active={filter === 'safe'} />
-        <StatCard value={stats.synced || 0} label="Synced" color="#9b7fe8" icon="✅" />
-      </div>
-
-      {/* Main Content */}
-      <div style={styles.main}>
-        {/* Map */}
-        <div style={styles.mapPanel}>
-          <div style={styles.panelTitle}>
-            🗺 Zone Map — Active Incidents
-            {filter !== 'all' && (
-              <button style={styles.clearFilter} onClick={() => setFilter('all')}>✕ Clear Filter</button>
-            )}
-          </div>
-          <MapView packets={filtered} selected={selected} onSelect={setSelected} />
-          <div style={styles.legend}>
-            {['critical','urgent','safe'].map(s => (
-              <div key={s} style={styles.legendItem}>
-                <div style={{ width: 10, height: 10, borderRadius: '50%', background: SEVERITY_LABELS[s].color }} />
-                <span style={styles.legendLabel}>{SEVERITY_LABELS[s].label}</span>
-              </div>
+        <div style={S.queueSection}>
+          <div style={S.sectionLabel}>INCIDENT QUEUE</div>
+          <div style={S.queueList}>
+            {packets.sort((a,b) => b.ts - a.ts).map(p => (
+              <EmergencyCard key={p.id} packet={p} />
             ))}
-          </div>
-        </div>
-
-        {/* Emergency List */}
-        <div style={styles.listPanel}>
-          <div style={styles.panelTitle}>
-            📋 Emergency Queue
-            <span style={styles.filterPill}>{filter === 'all' ? 'All' : filter.toUpperCase()}</span>
-          </div>
-          <div style={styles.list}>
-            {filtered.length === 0 ? (
-              <EmptyState filter={filter} />
-            ) : (
-              filtered.map((pkt, i) => (
-                <EmergencyCard
-                  key={pkt.id}
-                  packet={pkt}
-                  index={i}
-                  decoded={decodePacket(pkt.packet)}
-                  selected={selected === pkt.id}
-                  onSelect={() => setSelected(pkt.id === selected ? null : pkt.id)}
-                />
-              ))
+            {packets.length === 0 && (
+              <div style={S.emptyQueue}>
+                <div style={S.emptyIcon}>🛡️</div>
+                <div style={S.emptyTitle}>Operational Monitoring</div>
+                <div style={S.emptySub}>No active incidents reported in this sector.</div>
+              </div>
             )}
           </div>
         </div>
@@ -112,65 +69,45 @@ export default function RescueDashboard({ refreshTrigger }) {
   );
 }
 
-function StatCard({ value, label, color, icon, onClick, active }) {
+function StatCard({ label, val, icon, color = '#f0f4ff' }) {
   return (
-    <div
-      style={{
-        ...styles.statCard,
-        borderColor: active ? color + '88' : color + '22',
-        background: active ? color + '18' : color + '08',
-        cursor: onClick ? 'pointer' : 'default',
-        transform: active ? 'scale(1.02)' : 'scale(1)',
-      }}
-      onClick={onClick}
-    >
-      <div style={styles.statIcon}>{icon}</div>
-      <div style={{ ...styles.statValue, color }}>{value}</div>
-      <div style={styles.statLabel}>{label}</div>
+    <div style={S.statCard}>
+      <div style={S.statHead}>
+        <span style={S.statIcon}>{icon}</span>
+        <span style={S.statLabel}>{label}</span>
+      </div>
+      <div style={{ ...S.statVal, color }}>{val}</div>
     </div>
   );
 }
 
-function EmptyState({ filter }) {
-  return (
-    <div style={styles.empty}>
-      <div style={styles.emptyIcon}>📭</div>
-      <div style={styles.emptyTitle}>No {filter === 'all' ? '' : filter} emergencies yet</div>
-      <div style={styles.emptySub}>Use the Victim App to send an SOS message.</div>
-    </div>
-  );
-}
-
-function formatTime(d) {
-  return d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-}
-
-const styles = {
-  container: { display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' },
-  header: { display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', padding: '16px 24px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(10,15,30,0.9)' },
-  title: { display: 'flex', alignItems: 'center', gap: 10, fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: '1.1rem', color: '#f0f4ff', marginBottom: 4 },
-  titleIcon: { fontSize: '1.2rem' },
-  liveBadge: { display: 'flex', alignItems: 'center', gap: 5, background: 'rgba(48,209,88,0.1)', border: '1px solid rgba(48,209,88,0.3)', borderRadius: 20, padding: '2px 9px', fontSize: '0.65rem', color: '#30d158', fontWeight: 800, letterSpacing: '0.1em' },
-  liveDot: { width: 6, height: 6, borderRadius: '50%', background: '#30d158', animation: 'pulse-dot 1s ease-in-out infinite' },
-  subtitle: { fontSize: '0.7rem', color: '#4a5878', fontFamily: "'JetBrains Mono', monospace" },
-  refreshBtn: { padding: '6px 14px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.04)', cursor: 'pointer', color: '#8899bb', fontSize: '0.75rem', marginTop: 4 },
-  statsRow: { display: 'flex', gap: 10, padding: '14px 24px', borderBottom: '1px solid rgba(255,255,255,0.05)', overflowX: 'auto' },
-  statCard: { flex: '1 0 80px', minWidth: 80, borderRadius: 12, border: '1px solid', padding: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, transition: 'all 0.25s', cursor: 'default' },
-  statIcon: { fontSize: '1.1rem' },
-  statValue: { fontSize: '1.6rem', fontWeight: 800, fontFamily: "'Space Grotesk', sans-serif", lineHeight: 1 },
-  statLabel: { fontSize: '0.62rem', color: '#4a5878', textTransform: 'uppercase', letterSpacing: '0.07em', textAlign: 'center' },
-  main: { flex: 1, display: 'flex', overflow: 'hidden', minHeight: 0 },
-  mapPanel: { flex: 1.4, borderRight: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', overflow: 'hidden' },
-  listPanel: { flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 280 },
-  panelTitle: { padding: '10px 16px', fontSize: '0.75rem', fontWeight: 700, color: '#8899bb', letterSpacing: '0.05em', textTransform: 'uppercase', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', gap: 8 },
-  filterPill: { marginLeft: 'auto', fontSize: '0.65rem', background: 'rgba(74,158,255,0.15)', color: '#4a9eff', border: '1px solid rgba(74,158,255,0.3)', borderRadius: 20, padding: '1px 8px' },
-  clearFilter: { marginLeft: 'auto', fontSize: '0.65rem', background: 'transparent', border: 'none', color: '#ff3d55', cursor: 'pointer' },
-  list: { flex: 1, overflowY: 'auto', padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 8 },
-  legend: { display: 'flex', gap: 16, padding: '8px 16px', borderTop: '1px solid rgba(255,255,255,0.05)', justifyContent: 'center' },
-  legendItem: { display: 'flex', alignItems: 'center', gap: 5 },
-  legendLabel: { fontSize: '0.65rem', color: '#4a5878', textTransform: 'uppercase', letterSpacing: '0.07em' },
-  empty: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: 10, color: '#4a5878', padding: 24, textAlign: 'center' },
-  emptyIcon: { fontSize: '2.5rem' },
-  emptyTitle: { fontWeight: 600, fontSize: '0.9rem', color: '#8899bb' },
-  emptySub: { fontSize: '0.75rem' },
+const S = {
+  container: { height: '100%', display: 'flex', flexDirection: 'column', gap: 20, padding: '10px' },
+  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' },
+  badge: { fontSize: '0.6rem', background: '#ff3d55', color: '#fff', padding: '2px 6px', borderRadius: 4, fontWeight: 800, letterSpacing: '0.1em', marginBottom: 6, display: 'inline-block' },
+  title: { fontSize: '1.5rem', fontWeight: 800, margin: 0 },
+  meta: { fontSize: '0.7rem', color: '#4a5878', marginTop: 4, fontFamily: "'JetBrains Mono'" },
+  clock: { fontFamily: "'JetBrains Mono'", fontSize: '1rem', color: '#4a9eff', background: 'rgba(74, 158, 255, 0.1)', padding: '8px 16px', borderRadius: 8, border: '1px solid rgba(74, 158, 255, 0.2)' },
+  statGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 },
+  statCard: { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, padding: '16px' },
+  statHead: { display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 },
+  statIcon: { fontSize: '0.8rem' },
+  statLabel: { fontSize: '0.65rem', color: '#8899bb', fontWeight: 700, letterSpacing: '0.05em' },
+  statVal: { fontSize: '1.8rem', fontWeight: 900, fontFamily: "'JetBrains Mono'" },
+  mainGrid: { display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 20, flex: 1, minHeight: 0 },
+  mapSection: { display: 'flex', flexDirection: 'column', gap: 16, minHeight: 0 },
+  sectionLabel: { fontSize: '0.65rem', color: '#4a5878', fontWeight: 800, letterSpacing: '0.15em', marginBottom: 8 },
+  logSection: { flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 },
+  logBox: { flex: 1, background: '#000', borderRadius: 12, padding: 12, overflowY: 'auto', border: '1px solid rgba(255,255,255,0.05)', fontFamily: "'JetBrains Mono'", fontSize: '0.7rem' },
+  logEntry: { display: 'flex', gap: 16, padding: '4px 0', borderBottom: '1px solid rgba(255,255,255,0.02)', color: '#4a5878' },
+  logTime: { color: '#8899bb' },
+  logPacket: { color: '#4a9eff', fontWeight: 700 },
+  logAction: { marginLeft: 'auto', color: '#30d158', opacity: 0.7 },
+  emptyLog: { color: '#2a3450', textAlign: 'center', marginTop: 40 },
+  queueSection: { display: 'flex', flexDirection: 'column', minHeight: 0 },
+  queueList: { flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 12, paddingRight: 8 },
+  emptyQueue: { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', background: 'rgba(255,255,255,0.01)', borderRadius: 16, border: '1px dashed rgba(255,255,255,0.05)' },
+  emptyIcon: { fontSize: '3rem', opacity: 0.3, marginBottom: 16 },
+  emptyTitle: { color: '#8899bb', fontWeight: 700, marginBottom: 4 },
+  emptySub: { fontSize: '0.75rem', color: '#4a5878' },
 };

@@ -1,88 +1,78 @@
 import React from 'react';
-import { SEVERITY_LABELS } from '../utils/classifier.js';
+import { decodePacket } from '../utils/packetEncoder.js';
 
-export default function EmergencyCard({ packet, decoded, selected, onSelect, index }) {
-  const sev  = SEVERITY_LABELS[packet.severity] || SEVERITY_LABELS.safe;
-  const time  = new Date(packet.queuedAt || packet.ts);
-  const elapsed = Math.round((Date.now() - time) / 1000);
-  const timeStr = elapsed < 60 ? `${elapsed}s ago` : elapsed < 3600 ? `${Math.floor(elapsed/60)}m ago` : `${Math.floor(elapsed/3600)}h ago`;
+export default function EmergencyCard({ packet }) {
+  const data = decodePacket(packet.packet);
+  const isCritical = packet.severity === 'critical';
 
   return (
-    <div
-      style={{
-        ...styles.card,
-        borderColor: selected ? sev.color + '88' : sev.color + '22',
-        background: selected ? sev.color + '14' : sev.color + '08',
-        transform: selected ? 'scale(1.01)' : 'scale(1)',
-        animationDelay: `${index * 0.05}s`,
-      }}
-      className="animate-slide-right"
-      onClick={onSelect}
-    >
-      {/* Severity stripe */}
-      <div style={{ ...styles.stripe, background: sev.color }} />
+    <div style={{ 
+      ...S.card, 
+      borderColor: isCritical ? 'rgba(255, 61, 85, 0.3)' : 'rgba(255, 255, 255, 0.1)',
+      background: isCritical ? 'rgba(255, 61, 85, 0.03)' : 'rgba(255, 255, 255, 0.02)'
+    }} className="animate-slide-up">
+      <div style={S.header}>
+        <div style={{ ...S.sevTag, background: isCritical ? '#ff3d55' : '#ff9500' }}>
+          {packet.severity.toUpperCase()}
+        </div>
+        <div style={S.id}>ID: {packet.id.slice(-6)}</div>
+        <div style={S.time}>{new Date(packet.ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+      </div>
 
-      <div style={styles.body}>
-        {/* Top row */}
-        <div style={styles.topRow}>
-          <div style={{ ...styles.sevBadge, background: sev.color + '22', color: sev.color }}>
-            <span style={{ ...styles.sevDot, background: sev.color }} />
-            {sev.label}
+      <div style={S.body}>
+        <div style={S.condition}>{data.condition}</div>
+        <div style={S.details}>
+          <div style={S.detailItem}>
+            <span style={S.label}>PEOPLE</span>
+            <span style={S.val}>{data.people}</span>
           </div>
-          <div style={styles.packetCode} className="mono">{packet.packet}</div>
-          <div style={styles.syncStatus}>
-            {packet.synced
-              ? <span style={{ color: '#30d158', fontSize: '0.65rem' }}>✅ Synced</span>
-              : <span style={{ color: '#ff9500', fontSize: '0.65rem' }}>⏳ Pending</span>
-            }
+          <div style={S.detailItem}>
+            <span style={S.label}>ZONE</span>
+            <span style={S.val}>L{data.zone}</span>
+          </div>
+          <div style={S.detailItem}>
+            <span style={S.label}>LAT/LNG</span>
+            <span style={S.val}>{packet.lat.toFixed(3)}, {packet.lng.toFixed(3)}</span>
           </div>
         </div>
+      </div>
 
-        {/* Info row */}
-        <div style={styles.infoRow}>
-          {decoded && (
-            <>
-              <InfoChip icon="⚠" value={decoded.condition} />
-              <InfoChip icon="👥" value={`${decoded.people} person${decoded.people > 1 ? 's' : ''}`} />
-              <InfoChip icon="📍" value={`Zone L${decoded.zone}`} />
-            </>
-          )}
-          <InfoChip icon="🕐" value={timeStr} dim />
-        </div>
-
-        {/* ID */}
-        <div style={styles.idRow} className="mono">{packet.id}</div>
+      <div style={S.footer}>
+        <div style={S.packetLabel}>RAW PACKET</div>
+        <div style={S.packetVal}>{packet.packet}</div>
       </div>
     </div>
   );
 }
 
-function InfoChip({ icon, value, dim }) {
-  return (
-    <span style={{ ...styles.chip, color: dim ? '#4a5878' : '#8899bb' }}>
-      {icon} {value}
-    </span>
-  );
-}
-
-const styles = {
+const S = {
   card: {
-    display: 'flex',
-    borderRadius: 10,
+    borderRadius: 12,
     border: '1px solid',
-    overflow: 'hidden',
-    cursor: 'pointer',
-    transition: 'all 0.2s ease',
-    flexShrink: 0,
+    padding: 14,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 12,
+    transition: 'all 0.3s',
   },
-  stripe: { width: 3, flexShrink: 0 },
-  body: { flex: 1, padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 6, minWidth: 0 },
-  topRow: { display: 'flex', alignItems: 'center', gap: 8 },
-  sevBadge: { display: 'flex', alignItems: 'center', gap: 4, padding: '2px 8px', borderRadius: 20, fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.07em', flexShrink: 0 },
-  sevDot: { width: 6, height: 6, borderRadius: '50%', animation: 'pulse-dot 1.5s infinite' },
-  packetCode: { fontSize: '0.78rem', color: '#4a9eff', fontWeight: 700 },
-  syncStatus: { marginLeft: 'auto' },
-  infoRow: { display: 'flex', flexWrap: 'wrap', gap: 5 },
-  chip: { fontSize: '0.67rem', background: 'rgba(255,255,255,0.04)', borderRadius: 20, padding: '2px 8px', whiteSpace: 'nowrap' },
-  idRow: { fontSize: '0.58rem', color: '#2a3450', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  header: { display: 'flex', alignItems: 'center', gap: 10 },
+  sevTag: { fontSize: '0.6rem', color: '#fff', fontWeight: 900, padding: '2px 6px', borderRadius: 4, letterSpacing: '0.05em' },
+  id: { fontSize: '0.65rem', color: '#4a5878', fontFamily: "'JetBrains Mono'" },
+  time: { marginLeft: 'auto', fontSize: '0.65rem', color: '#8899bb', fontWeight: 600 },
+  body: { display: 'flex', flexDirection: 'column', gap: 8 },
+  condition: { fontSize: '1rem', fontWeight: 800, color: '#f0f4ff' },
+  details: { display: 'flex', gap: 20 },
+  detailItem: { display: 'flex', flexDirection: 'column', gap: 2 },
+  label: { fontSize: '0.55rem', color: '#4a5878', fontWeight: 700, letterSpacing: '0.1em' },
+  val: { fontSize: '0.75rem', color: '#f0f4ff', fontWeight: 700, fontFamily: "'JetBrains Mono'" },
+  footer: { 
+    display: 'flex', 
+    alignItems: 'center', 
+    gap: 12, 
+    marginTop: 4, 
+    paddingTop: 10, 
+    borderTop: '1px solid rgba(255,255,255,0.05)' 
+  },
+  packetLabel: { fontSize: '0.5rem', color: '#4a5878', fontWeight: 700 },
+  packetVal: { fontSize: '0.7rem', color: '#4a9eff', fontFamily: "'JetBrains Mono'", fontWeight: 700, letterSpacing: '0.1em' },
 };
