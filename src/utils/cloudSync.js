@@ -1,52 +1,52 @@
 /**
  * SYNC BRIDGE — CLOUD SYNC ENGINE (SPARK PLAN OPTIMIZED)
- * Optimized for Firebase Spark (Free) Plan:
- * 1. Zero Cloud Functions (No Blaze required).
- * 2. Optimized Firestore writes (Micro-packets save bandwidth).
- * 3. Client-side persistence to minimize unnecessary reads.
+ * Optimized for Firebase Spark (Free) Plan + ntfy.sh for FREE notifications.
  */
+
+// Unique topic for your project (You can change this)
+const NTFY_TOPIC = "sync_bridge_sar_alerts_" + Math.random().toString(36).slice(2, 7);
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "demo-key",
   authDomain: "sync-bridge.firebaseapp.com",
   projectId: "sync-bridge",
-  storageBucket: "sync-bridge.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef"
 };
 
 /**
- * Direct Client-to-Firestore Push.
- * Note: Spark plan allows direct Firestore writes from the client 
- * as long as Security Rules are set correctly.
+ * Pushes to Cloud + Sends FREE Push Notification via ntfy.sh
  */
 export async function pushToCloud(packet) {
   console.log("☁️ [Spark-Sync] Pushing Micro-Packet:", packet.id);
   
-  // Simulation: In production, you would use:
-  // const docRef = await addDoc(collection(db, "emergency_feed"), packet);
-  
+  // 1. Trigger the ntfy.sh notification (Bypasses Cloud Function limit)
+  try {
+    const priority = packet.severity === 'critical' ? 'urgent' : 'high';
+    const tags = packet.severity === 'critical' ? 'rotating_light,sos' : 'warning';
+    
+    await fetch(`https://ntfy.sh/${NTFY_TOPIC}`, {
+      method: 'POST',
+      body: `NEW SOS: ${packet.packet} | Location Sector: ${packet.id.slice(-2)}`,
+      headers: {
+        'Title': `🚨 [${packet.severity.toUpperCase()}] Sync Bridge Alert`,
+        'Priority': priority,
+        'Tags': tags
+      }
+    });
+    console.log("🔔 [ntfy] Push notification sent to topic:", NTFY_TOPIC);
+  } catch (err) {
+    console.error("❌ [ntfy] Notification failed:", err);
+  }
+
+  // 2. Simulate Firestore Push
   await new Promise(resolve => setTimeout(resolve, 600));
-  return { success: true, spark_usage: "minimal" };
+  return { success: true, topic: NTFY_TOPIC };
 }
 
-/**
- * Optimized Listener for Spark Plan.
- * We use a single collection listener to stay within the 50k daily read limit.
- */
 export function subscribeToIncidents(onUpdate) {
-  console.log("📡 [Spark-Sync] Real-time listener active (Free Tier optimized)");
-  
-  // In production:
-  // const q = query(collection(db, "emergency_feed"), orderBy("ts", "desc"), limit(50));
-  // return onSnapshot(q, (snapshot) => { ... });
-
+  console.log("📡 [Spark-Sync] Real-time listener active");
   return () => console.log("📴 Listener detached.");
 }
 
-/**
- * PRO-TIP FOR HACKATHON JUDGES:
- * By using the Spark Plan, we demonstrate how Sync Bridge is a 
- * low-cost, high-efficiency solution that can be deployed 
- * globally without massive infrastructure costs.
- */
+export function getNtfyTopic() {
+  return NTFY_TOPIC;
+}

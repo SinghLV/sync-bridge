@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import MapView from './MapView.jsx';
 import EmergencyCard from './EmergencyCard.jsx';
-import { subscribeToIncidents } from '../utils/cloudSync.js';
+import { subscribeToIncidents, getNtfyTopic } from '../utils/cloudSync.js';
 
 export default function RescueDashboard({ packets = [] }) {
   const [lastCriticalId, setLastCriticalId] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
+  const topic = getNtfyTopic();
 
-  // Tactical Alert logic: Flash screen when a new critical packet arrives
   useEffect(() => {
     const criticals = packets.filter(p => p.severity === 'critical');
     if (criticals.length > 0) {
@@ -32,16 +32,22 @@ export default function RescueDashboard({ packets = [] }) {
   };
 
   return (
-    <div style={{ ...S.container, border: showAlert ? '4px solid #ff3d55' : '4px solid transparent', transition: 'border 0.3s' }}>
-      {showAlert && <div style={S.alertOverlay} className="animate-fade-in">⚠️ CRITICAL INCOMING SOS ⚠️</div>}
+    <div style={{ ...S.container, border: showAlert ? '4px solid #ff3d55' : '4px solid transparent' }}>
+      {showAlert && <div style={S.alertOverlay}>⚠️ CRITICAL INCOMING SOS ⚠️</div>}
       
       <div style={S.header}>
         <div style={S.titleArea}>
           <div style={S.badge}>SAR OPERATIONS — SECTOR 7</div>
           <h2 style={S.title}>Emergency Response Command</h2>
-          <div style={S.meta}>Network: {packets.length > 0 ? 'Active' : 'Listening...'} · Bridge Nodes: 14 · Cloud: {import.meta.env.VITE_FIREBASE_API_KEY ? 'Connected' : 'Simulation Mode'}</div>
+          <div style={S.meta}>Network: Active · Cloud: {import.meta.env.VITE_FIREBASE_API_KEY ? 'Connected' : 'Simulation'}</div>
         </div>
-        <div style={S.clock}>{new Date().toLocaleTimeString()}</div>
+        
+        <div style={S.mobileAlerts}>
+          <div style={S.mobileLabel}>📲 ENABLE MOBILE ALERTS</div>
+          <div style={S.mobileBox}>
+            Subscribe to topic: <span style={S.topicText}>{topic}</span> on <b>ntfy</b> app
+          </div>
+        </div>
       </div>
 
       <div style={S.statGrid}>
@@ -63,10 +69,9 @@ export default function RescueDashboard({ packets = [] }) {
                 <div key={p.id} style={S.logEntry}>
                   <span style={S.logTime}>{new Date(p.ts).toLocaleTimeString([], { hour12: false })}</span>
                   <span style={S.logPacket}>{p.packet}</span>
-                  <span style={S.logAction}>FROM NODE_{p.id.slice(-4)}</span>
+                  <span style={S.logAction}>BROADCASTED</span>
                 </div>
               ))}
-              {packets.length === 0 && <div style={S.emptyLog}>Waiting for incoming packets...</div>}
             </div>
           </div>
         </div>
@@ -77,13 +82,6 @@ export default function RescueDashboard({ packets = [] }) {
             {packets.sort((a,b) => b.ts - a.ts).map(p => (
               <EmergencyCard key={p.id} packet={p} />
             ))}
-            {packets.length === 0 && (
-              <div style={S.emptyQueue}>
-                <div style={S.emptyIcon}>🛡️</div>
-                <div style={S.emptyTitle}>Operational Monitoring</div>
-                <div style={S.emptySub}>No active incidents reported in this sector.</div>
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -93,7 +91,7 @@ export default function RescueDashboard({ packets = [] }) {
 
 function StatCard({ label, val, icon, color = '#f0f4ff', pulse = false }) {
   return (
-    <div style={{ ...S.statCard, boxShadow: pulse ? `0 0 20px ${color}33` : 'none' }} className={pulse ? 'animate-pulse' : ''}>
+    <div style={S.statCard} className={pulse ? 'animate-pulse' : ''}>
       <div style={S.statHead}>
         <span style={S.statIcon}>{icon}</span>
         <span style={S.statLabel}>{label}</span>
@@ -104,33 +102,32 @@ function StatCard({ label, val, icon, color = '#f0f4ff', pulse = false }) {
 }
 
 const S = {
-  container: { height: '100%', display: 'flex', flexDirection: 'column', gap: 20, padding: '10px', position: 'relative', overflow: 'hidden' },
-  alertOverlay: { position: 'absolute', top: 0, left: 0, right: 0, background: '#ff3d55', color: '#fff', padding: '8px', textAlign: 'center', fontWeight: 900, fontSize: '1rem', zIndex: 1000, letterSpacing: '0.2em' },
-  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' },
-  badge: { fontSize: '0.6rem', background: '#ff3d55', color: '#fff', padding: '2px 6px', borderRadius: 4, fontWeight: 800, letterSpacing: '0.1em', marginBottom: 6, display: 'inline-block' },
-  title: { fontSize: '1.5rem', fontWeight: 800, margin: 0 },
-  meta: { fontSize: '0.7rem', color: '#4a5878', marginTop: 4, fontFamily: "'JetBrains Mono'" },
-  clock: { fontFamily: "'JetBrains Mono'", fontSize: '1rem', color: '#4a9eff', background: 'rgba(74, 158, 255, 0.1)', padding: '8px 16px', borderRadius: 8, border: '1px solid rgba(74, 158, 255, 0.2)' },
+  container: { height: '100%', display: 'flex', flexDirection: 'column', gap: 20, padding: '10px', position: 'relative' },
+  alertOverlay: { position: 'absolute', top: 0, left: 0, right: 0, background: '#ff3d55', color: '#fff', padding: '8px', textAlign: 'center', fontWeight: 900, zIndex: 1000 },
+  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
+  titleArea: { flex: 1 },
+  badge: { fontSize: '0.6rem', background: '#ff3d55', color: '#fff', padding: '2px 6px', borderRadius: 4, fontWeight: 800, marginBottom: 4, display: 'inline-block' },
+  title: { fontSize: '1.4rem', fontWeight: 800, margin: 0 },
+  meta: { fontSize: '0.7rem', color: '#4a5878', fontFamily: "'JetBrains Mono'" },
+  mobileAlerts: { background: 'rgba(74, 158, 255, 0.05)', border: '1px solid rgba(74, 158, 255, 0.2)', padding: '10px', borderRadius: 8, maxWidth: '300px' },
+  mobileLabel: { fontSize: '0.6rem', color: '#4a9eff', fontWeight: 800, marginBottom: 4 },
+  mobileBox: { fontSize: '0.7rem', color: '#8899bb' },
+  topicText: { color: '#f0f4ff', fontWeight: 800, textDecoration: 'underline' },
   statGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 },
-  statCard: { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, padding: '16px' },
-  statHead: { display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 },
+  statCard: { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, padding: '12px' },
+  statHead: { display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 },
   statIcon: { fontSize: '0.8rem' },
-  statLabel: { fontSize: '0.65rem', color: '#8899bb', fontWeight: 700, letterSpacing: '0.05em' },
-  statVal: { fontSize: '1.8rem', fontWeight: 900, fontFamily: "'JetBrains Mono'" },
+  statLabel: { fontSize: '0.6rem', color: '#8899bb', fontWeight: 700 },
+  statVal: { fontSize: '1.5rem', fontWeight: 900, fontFamily: "'JetBrains Mono'" },
   mainGrid: { display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 20, flex: 1, minHeight: 0 },
   mapSection: { display: 'flex', flexDirection: 'column', gap: 16, minHeight: 0 },
-  sectionLabel: { fontSize: '0.65rem', color: '#4a5878', fontWeight: 800, letterSpacing: '0.15em', marginBottom: 8 },
+  sectionLabel: { fontSize: '0.65rem', color: '#4a5878', fontWeight: 800, letterSpacing: '0.15em' },
   logSection: { flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 },
   logBox: { flex: 1, background: '#000', borderRadius: 12, padding: 12, overflowY: 'auto', border: '1px solid rgba(255,255,255,0.05)', fontFamily: "'JetBrains Mono'", fontSize: '0.7rem' },
-  logEntry: { display: 'flex', gap: 16, padding: '4px 0', borderBottom: '1px solid rgba(255,255,255,0.02)', color: '#4a5878' },
+  logEntry: { display: 'flex', gap: 16, padding: '4px 0', color: '#4a5878' },
   logTime: { color: '#8899bb' },
-  logPacket: { color: '#4a9eff', fontWeight: 700 },
+  logPacket: { color: '#4a9eff' },
   logAction: { marginLeft: 'auto', color: '#30d158', opacity: 0.7 },
-  emptyLog: { color: '#2a3450', textAlign: 'center', marginTop: 40 },
   queueSection: { display: 'flex', flexDirection: 'column', minHeight: 0 },
-  queueList: { flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 12, paddingRight: 8 },
-  emptyQueue: { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', background: 'rgba(255,255,255,0.01)', borderRadius: 16, border: '1px dashed rgba(255,255,255,0.05)' },
-  emptyIcon: { fontSize: '3rem', opacity: 0.3, marginBottom: 16 },
-  emptyTitle: { color: '#8899bb', fontWeight: 700, marginBottom: 4 },
-  emptySub: { fontSize: '0.75rem', color: '#4a5878' },
+  queueList: { flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 12 },
 };
