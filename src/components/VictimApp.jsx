@@ -25,12 +25,12 @@ export default function VictimApp({ onPacketSent }) {
   const [queue, setQueue] = useState(getQueue());
   const [syncing, setSyncing] = useState(false);
   const [history, setHistory] = useState(getSynced());
+  const [isRecording, setIsRecording] = useState(false);
   
   const effectiveOnline = online && !simOffline;
 
   useEffect(() => {
     const cleanup = watchNetwork(() => setOnline(true), () => setOnline(false));
-    // Simulate signal fluctuation
     const interval = setInterval(() => {
       if (!simOffline) setSignal(Math.floor(Math.random() * 40) + 60);
       else setSignal(0);
@@ -38,16 +38,29 @@ export default function VictimApp({ onPacketSent }) {
     return () => { cleanup(); clearInterval(interval); };
   }, [simOffline]);
 
-  const handleClassify = () => {
-    if (!message.trim()) return;
+  const handleClassify = (textOverride) => {
+    const textToProcess = textOverride || message;
+    if (!textToProcess.trim()) return;
     setPhase('classifying');
     setTimeout(() => {
-      const cls = classifyMessage(message);
+      const cls = classifyMessage(textToProcess);
       const pkt = encodePacket(cls, 'U-V' + Math.random().toString(36).slice(2,4).toUpperCase());
       setClass(cls);
       setPacket(pkt);
       setPhase('classified');
     }, 1500);
+  };
+
+  const handleVoiceSOS = () => {
+    setIsRecording(true);
+    setPhase('recording');
+    // Simulate voice recording and then "processing" it locally
+    setTimeout(() => {
+      setIsRecording(false);
+      const scenario = DEMO_SCENARIOS[Math.floor(Math.random() * DEMO_SCENARIOS.length)];
+      setMessage(scenario);
+      handleClassify(scenario);
+    }, 3000);
   };
 
   const handleSend = () => {
@@ -76,7 +89,6 @@ export default function VictimApp({ onPacketSent }) {
       <div style={S.phoneNotch} />
       
       <div style={S.container}>
-        {/* Phone Status Bar */}
         <div style={S.phoneStatus}>
           <div style={S.time}>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
           <div style={S.statusIcons}>
@@ -114,7 +126,7 @@ export default function VictimApp({ onPacketSent }) {
               placeholder="What is your emergency?"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              disabled={phase === 'classifying' || phase === 'sent'}
+              disabled={phase === 'classifying' || phase === 'sent' || phase === 'recording'}
             />
             <div style={S.inputActions}>
               <button style={S.demoBtn} onClick={loadDemo}>💡 Demo Idea</button>
@@ -122,11 +134,29 @@ export default function VictimApp({ onPacketSent }) {
             </div>
           </div>
 
-          {phase === 'idle' && message.length > 5 && (
-            <button style={S.actionBtn} onClick={handleClassify} className="animate-slide-up">
-              🧠 Process with Edge AI
-            </button>
-          )}
+          <div style={S.sosActions}>
+            {phase === 'idle' && message.length > 5 && (
+              <button style={S.actionBtn} onClick={() => handleClassify()} className="animate-slide-up">
+                🧠 Process with Edge AI
+              </button>
+            )}
+            
+            {phase === 'idle' && message.length <= 5 && !isRecording && (
+              <button style={S.voiceBtn} onClick={handleVoiceSOS}>
+                <span style={S.micIcon}>🎙️</span>
+                <span>Voice SOS (Simulated STT)</span>
+              </button>
+            )}
+
+            {isRecording && (
+              <div style={S.recordingState}>
+                <div style={S.recordingBar}>
+                  {[1,2,3,4,5,6,7,8].map(i => <div key={i} className="voice-bar" style={{ animationDelay: `${i*0.1}s` }} />)}
+                </div>
+                <div style={S.recordingText}>Listening... (Local STT)</div>
+              </div>
+            )}
+          </div>
 
           {phase === 'classifying' && (
             <div style={S.processing}>
@@ -176,6 +206,20 @@ export default function VictimApp({ onPacketSent }) {
 
         <div style={S.homeBar} />
       </div>
+      
+      <style>{`
+        .voice-bar {
+          width: 4px;
+          height: 10px;
+          background: #ff3d55;
+          border-radius: 2px;
+          animation: voice-pulse 0.5s ease-in-out infinite alternate;
+        }
+        @keyframes voice-pulse {
+          from { height: 10px; }
+          to { height: 30px; }
+        }
+      `}</style>
     </div>
   );
 }
@@ -199,39 +243,10 @@ function SignalIcon({ strength }) {
 }
 
 const S = {
-  phoneFrame: {
-    width: '320px',
-    height: '640px',
-    background: '#000',
-    borderRadius: '40px',
-    border: '8px solid #1e293b',
-    position: 'relative',
-    overflow: 'hidden',
-    boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
-  },
-  phoneNotch: {
-    position: 'absolute',
-    top: 0, left: '50%',
-    transform: 'translateX(-50%)',
-    width: '120px', height: '25px',
-    background: '#1e293b',
-    borderRadius: '0 0 15px 15px',
-    zIndex: 100,
-  },
-  container: {
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    background: '#05070a',
-    position: 'relative',
-  },
-  phoneStatus: {
-    padding: '12px 24px 4px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    zIndex: 10,
-  },
+  phoneFrame: { width: '320px', height: '640px', background: '#000', borderRadius: '40px', border: '8px solid #1e293b', position: 'relative', overflow: 'hidden', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' },
+  phoneNotch: { position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '120px', height: '25px', background: '#1e293b', borderRadius: '0 0 15px 15px', zIndex: 100 },
+  container: { height: '100%', display: 'flex', flexDirection: 'column', background: '#05070a', position: 'relative' },
+  phoneStatus: { padding: '12px 24px 4px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 10 },
   time: { fontSize: '0.75rem', fontWeight: 700, color: '#f0f4ff' },
   statusIcons: { display: 'flex', gap: 8, alignItems: 'center' },
   battery: { width: 20, height: 10, border: '1px solid rgba(255,255,255,0.3)', borderRadius: 2, padding: 1 },
@@ -244,16 +259,17 @@ const S = {
   toggle: { width: '100%', padding: '8px', border: 'none', borderRadius: 8, color: '#fff', fontSize: '0.7rem', fontWeight: 700, cursor: 'pointer' },
   inputArea: { display: 'flex', flexDirection: 'column', gap: 8 },
   label: { fontSize: '0.6rem', color: '#8899bb', fontWeight: 700, letterSpacing: '0.1em' },
-  textarea: { 
-    background: 'rgba(255,255,255,0.05)', 
-    border: '1px solid rgba(255,255,255,0.1)', 
-    borderRadius: 12, padding: 12, color: '#f0f4ff',
-    height: '120px', resize: 'none', fontFamily: "'Inter'", fontSize: '0.9rem'
-  },
+  textarea: { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, padding: 12, color: '#f0f4ff', height: '100px', resize: 'none', fontFamily: "'Inter'", fontSize: '0.9rem' },
   inputActions: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   demoBtn: { background: 'none', border: 'none', color: '#4a9eff', fontSize: '0.7rem', cursor: 'pointer', fontWeight: 600 },
   charCount: { fontSize: '0.6rem', color: '#4a5878' },
+  sosActions: { display: 'flex', flexDirection: 'column', gap: 10 },
   actionBtn: { padding: '14px', borderRadius: 12, border: 'none', background: 'linear-gradient(135deg, #4a9eff, #9b7fe8)', color: '#fff', fontWeight: 800, cursor: 'pointer' },
+  voiceBtn: { padding: '14px', borderRadius: 12, border: '2px dashed rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.02)', color: '#8899bb', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 },
+  micIcon: { fontSize: '1.2rem' },
+  recordingState: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, padding: 10 },
+  recordingBar: { display: 'flex', gap: 4, alignItems: 'center', height: 40 },
+  recordingText: { fontSize: '0.75rem', color: '#ff3d55', fontWeight: 700 },
   processing: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, padding: 20 },
   spinner: { width: 30, height: 30, border: '3px solid rgba(74, 158, 255, 0.2)', borderTopColor: '#4a9eff', borderRadius: '50%' },
   procText: { fontSize: '0.9rem', fontWeight: 700, color: '#4a9eff' },

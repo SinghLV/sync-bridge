@@ -1,9 +1,29 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import MapView from './MapView.jsx';
 import EmergencyCard from './EmergencyCard.jsx';
-import { decodePacket } from '../utils/packetEncoder.js';
+import { subscribeToIncidents } from '../utils/cloudSync.js';
 
 export default function RescueDashboard({ packets = [] }) {
+  const [lastCriticalId, setLastCriticalId] = useState(null);
+  const [showAlert, setShowAlert] = useState(false);
+
+  // Tactical Alert logic: Flash screen when a new critical packet arrives
+  useEffect(() => {
+    const criticals = packets.filter(p => p.severity === 'critical');
+    if (criticals.length > 0) {
+      const latest = criticals[0];
+      if (latest.id !== lastCriticalId) {
+        setLastCriticalId(latest.id);
+        triggerAlert();
+      }
+    }
+  }, [packets]);
+
+  const triggerAlert = () => {
+    setShowAlert(true);
+    setTimeout(() => setShowAlert(false), 3000);
+  };
+
   const stats = {
     total: packets.length,
     critical: packets.filter(p => p.severity === 'critical').length,
@@ -12,19 +32,21 @@ export default function RescueDashboard({ packets = [] }) {
   };
 
   return (
-    <div style={S.container}>
+    <div style={{ ...S.container, border: showAlert ? '4px solid #ff3d55' : '4px solid transparent', transition: 'border 0.3s' }}>
+      {showAlert && <div style={S.alertOverlay} className="animate-fade-in">⚠️ CRITICAL INCOMING SOS ⚠️</div>}
+      
       <div style={S.header}>
         <div style={S.titleArea}>
-          <div style={S.badge}>SAR OPERATIONS</div>
+          <div style={S.badge}>SAR OPERATIONS — SECTOR 7</div>
           <h2 style={S.title}>Emergency Response Command</h2>
-          <div style={S.meta}>Network: Active · Bridge Nodes: 14 · Region: Sector-7</div>
+          <div style={S.meta}>Network: {packets.length > 0 ? 'Active' : 'Listening...'} · Bridge Nodes: 14 · Cloud: {import.meta.env.VITE_FIREBASE_API_KEY ? 'Connected' : 'Simulation Mode'}</div>
         </div>
         <div style={S.clock}>{new Date().toLocaleTimeString()}</div>
       </div>
 
       <div style={S.statGrid}>
         <StatCard label="TOTAL ALERTS" val={stats.total} icon="📡" />
-        <StatCard label="CRITICAL" val={stats.critical} icon="🔴" color="#ff3d55" />
+        <StatCard label="CRITICAL" val={stats.critical} icon="🔴" color="#ff3d55" pulse={stats.critical > 0} />
         <StatCard label="URGENT" val={stats.urgent} icon="🟠" color="#ff9500" />
         <StatCard label="SYNCED" val={stats.synced} icon="✅" color="#30d158" />
       </div>
@@ -41,7 +63,7 @@ export default function RescueDashboard({ packets = [] }) {
                 <div key={p.id} style={S.logEntry}>
                   <span style={S.logTime}>{new Date(p.ts).toLocaleTimeString([], { hour12: false })}</span>
                   <span style={S.logPacket}>{p.packet}</span>
-                  <span style={S.logAction}>RECEIVED FROM BRIDGE_{p.id.slice(-4)}</span>
+                  <span style={S.logAction}>FROM NODE_{p.id.slice(-4)}</span>
                 </div>
               ))}
               {packets.length === 0 && <div style={S.emptyLog}>Waiting for incoming packets...</div>}
@@ -69,9 +91,9 @@ export default function RescueDashboard({ packets = [] }) {
   );
 }
 
-function StatCard({ label, val, icon, color = '#f0f4ff' }) {
+function StatCard({ label, val, icon, color = '#f0f4ff', pulse = false }) {
   return (
-    <div style={S.statCard}>
+    <div style={{ ...S.statCard, boxShadow: pulse ? `0 0 20px ${color}33` : 'none' }} className={pulse ? 'animate-pulse' : ''}>
       <div style={S.statHead}>
         <span style={S.statIcon}>{icon}</span>
         <span style={S.statLabel}>{label}</span>
@@ -82,7 +104,8 @@ function StatCard({ label, val, icon, color = '#f0f4ff' }) {
 }
 
 const S = {
-  container: { height: '100%', display: 'flex', flexDirection: 'column', gap: 20, padding: '10px' },
+  container: { height: '100%', display: 'flex', flexDirection: 'column', gap: 20, padding: '10px', position: 'relative', overflow: 'hidden' },
+  alertOverlay: { position: 'absolute', top: 0, left: 0, right: 0, background: '#ff3d55', color: '#fff', padding: '8px', textAlign: 'center', fontWeight: 900, fontSize: '1rem', zIndex: 1000, letterSpacing: '0.2em' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' },
   badge: { fontSize: '0.6rem', background: '#ff3d55', color: '#fff', padding: '2px 6px', borderRadius: 4, fontWeight: 800, letterSpacing: '0.1em', marginBottom: 6, display: 'inline-block' },
   title: { fontSize: '1.5rem', fontWeight: 800, margin: 0 },
