@@ -22,13 +22,16 @@ During disasters, communication infrastructure (cellular networks, internet) is 
 - **🛡️ Rescue Dashboard:** Real-time, map-based visualization for rescue teams to prioritize high-severity incidents.
 - **📡 Intelligent Sync:** Automatically pushes queued data to the cloud the moment any signal returns.
 
-## 🛠️ Tech Stack
+## 🛠️ Tech Stack & Efficiency
 
 - **Frontend:** React + Vite
 - **AI Layer:** Custom On-Device Keyword NLP (Gemini Nano Philosophy)
-- **Styling:** Vanilla CSS (Modern Aesthetics)
-- **Icons:** Lucide React
-- **Storage:** LocalStorage (Offline Queue)
+- **Cloud Backend:** Firebase (Optimized for **Spark Free Plan**)
+- **Styling:** Vanilla CSS (Modern Tactical Aesthetics)
+- **Storage:** LocalStorage (Offline Persistence)
+
+### 💰 Cost-Effectiveness (Spark Plan Ready)
+Sync Bridge is designed to be deployed with **zero infrastructure costs**. By shifting AI processing to the user's device and using micro-packet data structures, the system stays well within the limits of the **Firebase Spark Plan**, making it an ideal solution for resource-constrained disaster zones.
 
 ## 🚀 Getting Started
 
