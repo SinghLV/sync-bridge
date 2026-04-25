@@ -1,140 +1,102 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 export default function MapView({ incidents = [] }) {
-  // 3x3 Grid representing regions
-  const zones = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-  
+  // Simulate some static "Bridge Nodes" (Relay points)
+  const bridgeNodes = useMemo(() => [
+    { id: 'BN-1', x: 25, y: 30, status: 'online' },
+    { id: 'BN-2', x: 75, y: 20, status: 'online' },
+    { id: 'BN-3', x: 50, y: 80, status: 'warning' },
+    { id: 'BN-4', x: 85, y: 70, status: 'online' },
+  ], []);
+
+  // Map incidents to grid coordinates
+  const incidentPoints = incidents.map(inc => {
+    // Deterministic position based on ID for demo stability
+    const charCodeSum = inc.id.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+    return {
+      ...inc,
+      x: (charCodeSum % 80) + 10,
+      y: ((charCodeSum * 7) % 80) + 10
+    };
+  });
+
   return (
-    <div style={S.mapContainer}>
-      <div style={S.tacticalOverlay} />
-      <div style={S.grid}>
-        {zones.map(z => (
-          <div key={z} style={S.zone}>
-            <span style={S.zoneLabel}>L{z}</span>
-            {incidents.filter(i => i.zone === z).map((inc, idx) => (
-              <div 
-                key={inc.id} 
-                style={{
-                  ...S.incident,
-                  background: getSevColor(inc.severity),
-                  left: `${20 + (idx * 15)}%`,
-                  top: `${30 + (idx * 20)}%`,
-                }}
-                className="animate-pulse-dot"
-              >
-                <div style={S.ping} />
-              </div>
-            ))}
-          </div>
+    <div style={S.container}>
+      <svg viewBox="0 0 100 100" style={S.svg}>
+        {/* Grid Lines */}
+        {[...Array(11)].map((_, i) => (
+          <React.Fragment key={i}>
+            <line x1={i * 10} y1="0" x2={i * 10} y2="100" stroke="rgba(74, 158, 255, 0.05)" strokeWidth="0.1" />
+            <line x1="0" y1={i * 10} x2="100" y2={i * 10} stroke="rgba(74, 158, 255, 0.05)" strokeWidth="0.1" />
+          </React.Fragment>
         ))}
-      </div>
+
+        {/* Mesh Connections (The Wow Factor) */}
+        {incidentPoints.map(inc => {
+          // Find closest bridge node to connect to
+          const closestNode = bridgeNodes.reduce((prev, curr) => {
+            const dPrev = Math.hypot(inc.x - prev.x, inc.y - prev.y);
+            const dCurr = Math.hypot(inc.x - curr.x, inc.y - curr.y);
+            return dCurr < dPrev ? curr : prev;
+          });
+
+          return (
+            <line 
+              key={`line-${inc.id}`}
+              x1={inc.x} y1={inc.y} 
+              x2={closestNode.x} y2={closestNode.y} 
+              stroke={inc.severity === 'critical' ? 'rgba(255, 61, 85, 0.3)' : 'rgba(74, 158, 255, 0.2)'}
+              strokeWidth="0.4"
+              strokeDasharray="1,1"
+              className="mesh-line"
+            />
+          );
+        })}
+
+        {/* Bridge Nodes */}
+        {bridgeNodes.map(node => (
+          <g key={node.id}>
+            <circle cx={node.x} cy={node.y} r="1.5" fill="none" stroke="#4a9eff" strokeWidth="0.2" />
+            <circle cx={node.x} cy={node.y} r="0.6" fill={node.status === 'warning' ? '#ff9500' : '#4a9eff'}>
+              <animate attributeName="opacity" values="1;0.3;1" dur="3s" repeatCount="indefinite" />
+            </circle>
+            <text x={node.x + 2} y={node.y + 1} fontSize="1.5" fill="#4a5878" style={{ fontFamily: 'monospace' }}>{node.id}</text>
+          </g>
+        ))}
+
+        {/* Incident Pings */}
+        {incidentPoints.map(inc => (
+          <g key={inc.id}>
+            <circle cx={inc.x} cy={inc.y} r="1" fill={inc.severity === 'critical' ? '#ff3d55' : '#4a9eff'}>
+              <animate attributeName="r" values="1;2.5;1" dur="2s" repeatCount="indefinite" />
+              <animate attributeName="opacity" values="1;0;1" dur="2s" repeatCount="indefinite" />
+            </circle>
+            <circle cx={inc.x} cy={inc.y} r="0.8" fill={inc.severity === 'critical' ? '#ff3d55' : '#4a9eff'} />
+          </g>
+        ))}
+      </svg>
       
-      {/* Legend & Stats Overlay */}
-      <div style={S.statsOverlay}>
-        <div style={S.statItem}>
-          <span style={S.statLabel}>LAT</span>
-          <span style={S.statValue}>19.0760° N</span>
-        </div>
-        <div style={S.statItem}>
-          <span style={S.statLabel}>LNG</span>
-          <span style={S.statValue}>72.8777° E</span>
-        </div>
+      <div style={S.legend}>
+        <div style={S.legendItem}><span style={{...S.dot, background: '#4a9eff'}} /> Bridge Node</div>
+        <div style={S.legendItem}><span style={{...S.dot, background: '#ff3d55'}} /> SOS Origin</div>
       </div>
+
+      <style>{`
+        @keyframes dash {
+          to { stroke-dashoffset: -10; }
+        }
+        .mesh-line {
+          animation: dash 20s linear infinite;
+        }
+      `}</style>
     </div>
   );
 }
 
-function getSevColor(sev) {
-  if (sev === 'critical') return '#ff3d55';
-  if (sev === 'urgent')   return '#ff9500';
-  return '#30d158';
-}
-
 const S = {
-  mapContainer: {
-    position: 'relative',
-    width: '100%',
-    height: '400px',
-    background: '#0a0f1e',
-    borderRadius: '16px',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
-    overflow: 'hidden',
-    backgroundImage: `
-      linear-gradient(rgba(74, 158, 255, 0.1) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(74, 158, 255, 0.1) 1px, transparent 1px)
-    `,
-    backgroundSize: '20px 20px',
-  },
-  tacticalOverlay: {
-    position: 'absolute',
-    top: 0, left: 0, right: 0, bottom: 0,
-    background: 'radial-gradient(circle at 50% 50%, transparent 0%, rgba(0,0,0,0.4) 100%)',
-    pointerEvents: 'none',
-  },
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gridTemplateRows: 'repeat(3, 1fr)',
-    height: '100%',
-    position: 'relative',
-  },
-  zone: {
-    border: '0.5px solid rgba(255, 255, 255, 0.05)',
-    position: 'relative',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  zoneLabel: {
-    position: 'absolute',
-    top: 8,
-    left: 8,
-    fontSize: '0.6rem',
-    color: 'rgba(255, 255, 255, 0.2)',
-    fontFamily: "'JetBrains Mono'",
-  },
-  incident: {
-    position: 'absolute',
-    width: '12px',
-    height: '12px',
-    borderRadius: '50%',
-    boxShadow: '0 0 15px rgba(255, 255, 255, 0.3)',
-    zIndex: 10,
-  },
-  ping: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    borderRadius: '50%',
-    border: '2px solid inherit',
-    animation: 'pulse-ring 1.5s infinite',
-  },
-  statsOverlay: {
-    position: 'absolute',
-    bottom: 12,
-    right: 12,
-    display: 'flex',
-    gap: 16,
-    padding: '6px 12px',
-    background: 'rgba(0, 0, 0, 0.6)',
-    backdropFilter: 'blur(4px)',
-    borderRadius: '8px',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
-  },
-  statItem: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 2,
-  },
-  statLabel: {
-    fontSize: '0.5rem',
-    color: '#8899bb',
-    fontFamily: "'JetBrains Mono'",
-  },
-  statValue: {
-    fontSize: '0.7rem',
-    color: '#f0f4ff',
-    fontWeight: 700,
-    fontFamily: "'JetBrains Mono'",
-  },
+  container: { flex: 1, background: 'rgba(0,0,0,0.4)', borderRadius: 16, border: '1px solid rgba(255,255,255,0.05)', position: 'relative', overflow: 'hidden' },
+  svg: { width: '100%', height: '100%', display: 'block' },
+  legend: { position: 'absolute', bottom: 12, left: 12, display: 'flex', gap: 16, background: 'rgba(0,0,0,0.6)', padding: '6px 12px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)' },
+  legendItem: { fontSize: '0.6rem', color: '#8899bb', display: 'flex', alignItems: 'center', gap: 6, fontWeight: 700 },
+  dot: { width: 6, height: 6, borderRadius: '50%' }
 };

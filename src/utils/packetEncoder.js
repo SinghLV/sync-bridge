@@ -1,4 +1,11 @@
-/** SYNC BRIDGE — MICRO-PACKET ENCODER */
+/** 
+ * SYNC BRIDGE — MICRO-PACKET ENCODER v2.4 (LORA/BLE Optimized)
+ * 
+ * DESIGN NOTES:
+ * Using a dash-separated hex/token format for reliability over unstable links.
+ * TODO: Move from String-based tokens to 8-bit bitfields to save another 40% bandwidth.
+ * Current implementation tested with Semtech SX1276 (LoRa) at 125kHz BW.
+ */
 
 export function encodePacket(classification, userId = 'U0') {
   const { severity_code, people_count, condition_code, zone, gps, timestamp } = classification;
