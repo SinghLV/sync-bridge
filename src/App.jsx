@@ -4,8 +4,13 @@ import RescueDashboard from './components/rescue/RescueDashboard.jsx';
 import LandingPage from './components/LandingPage.jsx';
 
 export default function App() {
-  const [view, setView]             = useState('landing');     // landing | split | victim | dashboard
+  const params = new URLSearchParams(window.location.search);
+  const initialView = params.get('view') || 'landing';
+  
+  const [view, setView]             = useState(initialView); 
   const [dashRefresh, setRefresh]   = useState(0);
+
+  const isStandalone = view === 'victim' && params.get('view') === 'victim';
 
   function handlePacketSent() {
     setRefresh(r => r + 1);
@@ -15,8 +20,8 @@ export default function App() {
 
   return (
     <div style={styles.root}>
-      {/* Top Navigation */}
-      <nav style={styles.nav}>
+      {!isStandalone && (
+        <nav style={styles.nav}>
         <div style={styles.brand}>
           <div style={styles.brandIcon}>⚡</div>
           <div>
@@ -46,12 +51,14 @@ export default function App() {
       </nav>
 
       {/* Demo Banner */}
-      <div style={styles.demoBanner}>
-        <span style={styles.demoIcon}>💡</span>
-        <span>
-          <strong>Live Demo:</strong> Use the victim app to send a SOS → toggle airplane mode → watch the queue → restore network → see dashboard update in real-time.
-        </span>
-      </div>
+      {!isStandalone && (
+        <div style={styles.demoBanner}>
+          <span style={styles.demoIcon}>💡</span>
+          <span>
+            <strong>Live Demo:</strong> Use the victim app to send a SOS → toggle airplane mode → watch the queue → restore network → see dashboard update in real-time.
+          </span>
+        </div>
+      )}
 
       {/* Main Content */}
       <main style={styles.main}>
@@ -104,21 +111,23 @@ export default function App() {
       </main>
 
       {/* Architecture Footer */}
-      <div style={styles.footer}>
-        <ArchStep icon="💬" label="User Input" />
-        <Arrow />
-        <ArchStep icon="🧠" label="Edge AI" highlight />
-        <Arrow />
-        <ArchStep icon="📦" label="Packet Encode" />
-        <Arrow />
-        <ArchStep icon="💾" label="Local Queue" />
-        <Arrow />
-        <ArchStep icon="📡" label="Network Detect" />
-        <Arrow />
-        <ArchStep icon="☁" label="Cloud Sync" />
-        <Arrow />
-        <ArchStep icon="🗺" label="Dashboard" highlight />
-      </div>
+      {!isStandalone && (
+        <div style={styles.footer}>
+          <ArchStep icon="💬" label="User Input" />
+          <Arrow />
+          <ArchStep icon="🧠" label="Edge AI" highlight />
+          <Arrow />
+          <ArchStep icon="📦" label="Packet Encode" />
+          <Arrow />
+          <ArchStep icon="💾" label="Local Queue" />
+          <Arrow />
+          <ArchStep icon="📡" label="Network Detect" />
+          <Arrow />
+          <ArchStep icon="☁" label="Cloud Sync" />
+          <Arrow />
+          <ArchStep icon="🗺" label="Dashboard" highlight />
+        </div>
+      )}
     </div>
   );
 }
