@@ -51,7 +51,9 @@ export default function VictimApp({ onPacketSent }) {
   };
 
   const processTriage = (finalSelections) => {
-    setPhase('processing');
+    setPhase('neural_processing');
+    
+    // Simulate Edge AI / Gemini Nano processing
     setTimeout(() => {
       const mockCls = {
         severity: finalSelections.condition.sev,
@@ -59,13 +61,15 @@ export default function VictimApp({ onPacketSent }) {
         people_count: finalSelections.people.id,
         condition_code: finalSelections.condition.id,
         zone: Math.floor(Math.random() * 9) + 1,
+        confidence: (0.91 + Math.random() * 0.08).toFixed(4),
+        reasoning: `On-device BERT-Tiny identified high-risk semantics in condition '${finalSelections.condition.label}'. Priority elevated.`,
         timestamp: new Date().toISOString()
       };
       const pkt = encodePacket(mockCls, 'U-' + Math.random().toString(36).slice(2,5).toUpperCase());
       setPacket(pkt);
       setPhase('ready');
       setStep(2);
-    }, 1000);
+    }, 2500);
   };
 
   const handleSend = () => {
@@ -110,6 +114,18 @@ export default function VictimApp({ onPacketSent }) {
               <p style={S.successSub}>No signal detected. Packet stored in local buffer. Will auto-sync when a bridge node is in range.</p>
               <button style={S.resetBtn} onClick={() => { setStep(0); setPhase('idle'); }}>Back</button>
             </div>
+          ) : phase === 'neural_processing' ? (
+            <div style={S.aiProcessingView}>
+              <div style={S.aiScanner}>
+                <div style={S.aiBeam} />
+              </div>
+              <div style={S.aiTerminal}>
+                <div style={S.aiLine}>[SYSTEM] INITIALIZING GEMINI NANO...</div>
+                <div style={S.aiLine}>[AI] ANALYZING SEMANTICS...</div>
+                <div style={S.aiLine}>[AI] CLASSIFYING THREAT LEVEL...</div>
+                <div style={S.aiLine}>[AI] OPTIMIZING PACKET...</div>
+              </div>
+            </div>
           ) : step < 2 ? (
             <div className="animate-slide-up">
               <div style={S.progress}>Step {step + 1} of 2</div>
@@ -126,10 +142,24 @@ export default function VictimApp({ onPacketSent }) {
           ) : (
             <div className="animate-slide-up" style={S.reviewView}>
               <h2 style={S.stepTitle}>Review & Send</h2>
+              
+              <div style={S.aiReviewBadge}>
+                <div style={S.aiBadgeIcon}>🧠</div>
+                <div style={S.aiBadgeText}>
+                  <strong>AI TRIAGE COMPLETE</strong>
+                  <div>Confidence: {(packet.confidence * 100).toFixed(2)}%</div>
+                </div>
+              </div>
+
               <div style={S.summaryCard}>
                 <div style={S.summaryRow}><span>STATUS</span> <b>{selections.condition.label}</b></div>
                 <div style={S.summaryRow}><span>PEOPLE</span> <b>{selections.people.label}</b></div>
                 <div style={S.summaryRow}><span>SEVERITY</span> <b style={{ color: SEVERITY_LABELS[packet.severity].color }}>{packet.severity.toUpperCase()}</b></div>
+              </div>
+
+              <div style={S.reasoningBox}>
+                <div style={S.reasoningLabel}>AI REASONING</div>
+                <div style={S.reasoningText}>"{packet.reasoning}"</div>
               </div>
               
               <div style={S.packetBox}>
@@ -181,4 +211,15 @@ const S = {
   queuedView: { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', gap: 20 },
   bigIcon: { fontSize: '4rem' },
   queueTitle: { fontSize: '1.5rem', fontWeight: 900, color: '#ff9500' },
+  aiProcessingView: { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 30 },
+  aiScanner: { width: '100%', height: 120, background: 'rgba(74, 158, 255, 0.05)', borderRadius: 12, position: 'relative', overflow: 'hidden', border: '1px solid rgba(74, 158, 255, 0.2)' },
+  aiBeam: { position: 'absolute', top: 0, left: 0, width: '100%', height: 2, background: '#4a9eff', boxShadow: '0 0 15px #4a9eff', animation: 'scan 2s infinite ease-in-out' },
+  aiTerminal: { width: '100%', background: '#000', padding: '16px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.05)', fontFamily: "'JetBrains Mono'", fontSize: '0.6rem' },
+  aiLine: { color: '#30d158', marginBottom: 4, opacity: 0.8 },
+  aiReviewBadge: { background: 'rgba(48, 209, 88, 0.1)', border: '1px solid rgba(48, 209, 88, 0.3)', borderRadius: 12, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 },
+  aiBadgeIcon: { fontSize: '1.2rem' },
+  aiBadgeText: { fontSize: '0.7rem', color: '#30d158' },
+  reasoningBox: { background: 'rgba(255,255,255,0.02)', borderRadius: 12, padding: '12px', border: '1px solid rgba(255,255,255,0.05)' },
+  reasoningLabel: { fontSize: '0.55rem', color: '#4a5878', fontWeight: 800, marginBottom: 4 },
+  reasoningText: { fontSize: '0.75rem', color: '#8899bb', fontStyle: 'italic', lineHeight: 1.4 },
 };

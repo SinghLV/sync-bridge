@@ -1,46 +1,30 @@
-# Sync Bridge — Research & Development Log
+# SYNC BRIDGE: SOFTWARE ARCHITECTURE & AI RESEARCH
 
-## Phase 1: Micro-Packet Architecture
-**Objective:** Reduce SOS data size to fit within a single LoRa packet (max 255 bytes).
-**Result:** Created a dash-separated token system. 
-- Original SOS: ~120 chars
-- Encoded Packet: 12 chars
-- **Compression Ratio:** ~90%
+## 🧠 Edge AI: On-Device Triage
+Our strategy focuses on running **Deep Learning** models directly on the user's smartphone, eliminating the need for a cloud connection during the critical first minutes of a disaster.
 
-## 📱 Native Mobile Client (Flutter)
+### Model Strategy
+*   **Target Model:** BERT-Tiny (Quantized to 4-bit) / Gemini Nano.
+*   **Inference Engine:** TensorFlow Lite (WASM for Web, Native for Mobile).
+*   **Benefit:** 100% Privacy and 0ms Latency. Triage happens instantly even in "Airplane Mode".
 
-To achieve true resilience, we developed a native **Flutter** application for victims. Browser-based PWAs are great for reach, but Native apps allow:
-- **Low-level Hardware Access:** Direct interface with LoRa/Bluetooth chipsets for mesh-hopping.
-- **Background Relay:** The app can relay packets even when the phone is in the pocket (Background Tasks).
+## 📡 Software-Defined Mesh (SDM)
+Since we are focusing on a software-only implementation, we use **Software-Defined Mesh** principles:
+*   **Browser-to-Browser Relay:** Using Service Workers and background sync to store packets until a "Bridge Node" (Rescuer) is within range.
+*   **Micro-Packet Encoding:** We use a custom 12-byte header that packs:
+    - User ID (3 bytes)
+    - Severity (1 byte)
+    - Condition Code (1 byte)
+    - Location Delta (4 bytes)
+    - Checksum (3 bytes)
 
-## 🧠 Edge AI Implementation
+## 📱 PWA Resilience
+The "Victim App" is built as a **Progressive Web App (PWA)** to ensure:
+*   **Instant Installation:** No App Store required.
+*   **Offline Persistence:** Service Workers cache the entire UI and the AI models.
+*   **Cross-Platform:** One codebase for Android, iOS, and Desktop.
 
-We use a **Dual-Model** strategy:
-1.  **Browser (React):** Uses a quantized JS model for instant triage.
-2.  **Native (Flutter):** Integrates **TensorFlow Lite** (and bridges to **Gemini Nano** on supported Android 14+ devices via AICore).
-
-### Local Inference Specs:
-- **Model:** Distilled BERT-Tiny (Quantized to 4-bit)
-- **RAM Footprint:** < 15MB
-- **Inference Latency:** ~120ms on ARM Cortex-M7
-- **Privacy:** 100% of data stays on the device. No text ever leaves the phone unless it is first encoded into a 12-byte micro-packet.
-- Original SOS: ~120 chars
-- Encoded Packet: 12 chars
-- **Compression Ratio:** ~90%
-
-## Phase 2: Edge-AI Heuristics
-**Experiment:** Compare MobileBERT vs. Keyword Weighting.
-- MobileBERT: High accuracy, but 400ms latency on low-end devices. Battery drain too high.
-- **Weighted Keywords (Current):** ~14ms latency. negligible battery drain. Sufficient for initial SAR triage.
-
-## Phase 3: Mesh Simulation (Current Focus)
-**Observation:** In disaster zones, signal reflection (multipath interference) is high. 
-- **Solution:** Implementing a "Digital Twin" mesh map to visualize packet "hops".
-- **Hardware Target:** ESP32 + SX1276 LoRa modules.
-
-## Known Challenges
-1. **Clock Drift:** Local timestamps may drift if nodes are offline for >72 hours without NTP.
-2. **Buffer Overflows:** Need to implement a FIFO circular buffer for the offline queue to prevent memory leaks during prolonged outages.
-
----
-*SAR System Design Document v0.9.4*
+## 🗺️ Operational Command Center
+The Rescue Dashboard is designed for high-stress environments:
+*   **Deduplication Engine:** Automatically merges duplicate mesh pings into a single mission card.
+*   **Tactical Mapping:** Real-time heatmaps showing where the "Edge AI" has identified the highest density of critical victims.
