@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import VictimApp from './components/victim/VictimApp.jsx';
 import RescueDashboard from './components/rescue/RescueDashboard.jsx';
+import LandingPage from './components/LandingPage.jsx';
 
 export default function App() {
-  const [view, setView]             = useState('split');     // split | victim | dashboard
+  const [view, setView]             = useState('landing');     // landing | split | victim | dashboard
   const [dashRefresh, setRefresh]   = useState(0);
 
   function handlePacketSent() {
     setRefresh(r => r + 1);
   }
+
+  if (view === 'landing') return <LandingPage onEnter={setView} />;
 
   return (
     <div style={styles.root}>

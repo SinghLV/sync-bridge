@@ -15,6 +15,18 @@ export default function RescueDashboard({ refreshTrigger }) {
     setIncidents(prev => prev.map(p => p.id === id ? { ...p, status: 'claimed', claimedBy: 'TEAM-A1' } : p));
   };
 
+  const spawnMassiveDisaster = () => {
+    const scenarios = ['FI', 'FL', 'TI', 'MH'];
+    const mockPackets = Array.from({ length: 40 }).map((_, i) => ({
+      id: `SIM-${Math.random().toString(36).slice(2, 6).toUpperCase()}`,
+      ts: Date.now() - Math.random() * 1000000,
+      severity: Math.random() > 0.7 ? 'critical' : 'urgent',
+      packet: `SIM-${scenarios[Math.floor(Math.random()*4)]}-P${Math.floor(Math.random()*9)}-Z${Math.floor(Math.random()*9)}`,
+      synced: true
+    }));
+    setIncidents(prev => [...prev, ...mockPackets]);
+  };
+
   const filteredIncidents = incidents.filter(p => {
     if (activeTab === 'active') return !p.status || p.status === 'active';
     if (activeTab === 'claimed') return p.status === 'claimed';
@@ -36,6 +48,12 @@ export default function RescueDashboard({ refreshTrigger }) {
           <div style={S.badge}>SAR OPS CENTER</div>
           <h2 style={S.title}>Crisis Command Node</h2>
           <div style={S.meta}>NET: MESH-ALPHA · TOPIC: {topic}</div>
+        </div>
+
+        <div style={S.simTools}>
+          <button style={S.simBtn} onClick={spawnMassiveDisaster}>
+            ☢️ SIMULATE MASSIVE DISASTER
+          </button>
         </div>
         
         <div style={S.tabSwitcher}>
@@ -113,6 +131,8 @@ const S = {
   badge: { fontSize: '0.6rem', color: '#4a9eff', fontWeight: 900, letterSpacing: '0.15em' },
   title: { fontSize: '1.8rem', fontWeight: 900, margin: 0, letterSpacing: '-0.02em' },
   meta: { fontSize: '0.65rem', color: '#2a3450', fontFamily: "'JetBrains Mono'" },
+  simTools: { display: 'flex', alignItems: 'center', marginLeft: 'auto', marginRight: 20 },
+  simBtn: { background: 'rgba(255, 61, 85, 0.1)', border: '1px solid rgba(255, 61, 85, 0.3)', color: '#ff3d55', padding: '6px 12px', borderRadius: 6, fontSize: '0.65rem', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s' },
   tabSwitcher: { display: 'flex', background: 'rgba(255,255,255,0.03)', borderRadius: 10, padding: 4, border: '1px solid rgba(255,255,255,0.05)' },
   tab: { border: 'none', background: 'transparent', color: '#4a5878', padding: '6px 16px', borderRadius: 7, fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' },
   tabActive: { background: 'rgba(74,158,255,0.1)', color: '#4a9eff' },
