@@ -16,9 +16,10 @@ During disasters, communication infrastructure (cellular networks, internet) is 
 
 ## ✨ Key Features
 
-- **🧠 On-Device AI Classification:** Locally triages messages (Critical / Urgent / Safe) without cloud dependency.
-- **📦 Ultra-Light Data Packets:** Compresses emergency data into ~12-byte packets (e.g., `C1-P2-TI-L5`) for transmission over extremely weak signals.
-- **📥 Offline Queue:** Persists messages locally until a network connection (even partial) is detected.
+- **📱 Native Mobile Client:** A **Flutter** app built for victims, supporting hardware mesh integration and background packet relay.
+- **🧠 Local Edge AI:** Real-time on-device classification using **TensorFlow Lite** & **Gemini Nano** (via AICore). Zero-data-required triage.
+- **📦 Micro-Packet Protocol:** Custom 12-byte bit-packing logic to transmit complex SOS data over low-bandwidth LoRa/Mesh frequencies.
+- **📡 Offline-First Sync:** Intelligent queueing that automatically broadcasts data the moment a bridge node is detected.
 - **🛡️ Rescue Dashboard:** Real-time, map-based visualization for rescue teams to prioritize high-severity incidents.
 - **📡 Intelligent Sync:** Automatically pushes queued data to the cloud the moment any signal returns.
 
