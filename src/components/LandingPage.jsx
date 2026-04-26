@@ -12,10 +12,21 @@ const LandingPage = ({ onAction }) => {
       <div style={LandingStyles.crossBL}>+</div>
       <div style={LandingStyles.crossBR}>+</div>
       
+      <div style={LandingStyles.scanningRay} />
+      
       <div style={LandingStyles.mainContent}>
         <div style={LandingStyles.identity}>
+          <div style={LandingStyles.liveStatus}>
+            <span style={LandingStyles.pulseDot} />
+            LIVE_DEMO // ACTIVE_SESSION_NODE
+          </div>
           <div style={LandingStyles.tagline}>PROJECT_SYNC_BRIDGE // TERMINAL_01</div>
-          <h1 style={LandingStyles.heroText}>SYNC_BRIDGE</h1>
+          <h1 style={LandingStyles.heroText}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#3b82f6" style={{ marginRight: 12, verticalAlign: 'middle' }}>
+              <path d="M12 2L14.85 9.15L22 12L14.85 14.85L12 22L9.15 14.85L2 12L9.15 9.15L12 2Z" />
+            </svg>
+            SYNC_BRIDGE
+          </h1>
         </div>
 
         <div style={LandingStyles.specGrid}>
@@ -31,6 +42,10 @@ const LandingPage = ({ onAction }) => {
             <span style={LandingStyles.specLabel}>AI_QUANTIZATION</span>
             <span style={LandingStyles.specVal}>INT8_TPU_OPTIMIZED</span>
           </div>
+          <div style={LandingStyles.specItem}>
+            <span style={LandingStyles.specLabel}>SYNC_ENGINE</span>
+            <span style={LandingStyles.specVal}>ULTRA_LIGHT_HYBRID</span>
+          </div>
         </div>
 
         <div style={LandingStyles.actionGrid}>
@@ -38,14 +53,14 @@ const LandingPage = ({ onAction }) => {
             style={LandingStyles.btnPrimary} 
             onClick={() => onAction('victim')}
           >
-            [ START_BEACON_UPLINK ]
+            [ INITIATE_BEACON_UPLINK ]
           </button>
           
           <button 
             style={LandingStyles.btnSecondary} 
             onClick={() => onAction('dashboard')}
           >
-            [ ACCESS_COMMAND_CENTER ]
+            [ ACCESS_MISSION_CONTROL ]
           </button>
         </div>
       </div>
@@ -89,6 +104,20 @@ const LandingStyles = {
   crossBL: { position: 'absolute', bottom: 40, left: 40, color: '#1e293b', fontSize: '1.2rem', fontWeight: 200 },
   crossBR: { position: 'absolute', bottom: 40, right: 40, color: '#1e293b', fontSize: '1.2rem', fontWeight: 200 },
   
+  liveStatus: { fontSize: '0.65rem', fontWeight: 900, color: '#10b981', letterSpacing: '0.15em', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 },
+  pulseDot: { width: 6, height: 6, borderRadius: '50%', background: '#10b981', animation: 'pulse 1.5s infinite' },
+  scanningRay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    background: 'linear-gradient(to bottom, transparent 0%, rgba(59, 130, 246, 0.05) 50%, transparent 100%)',
+    backgroundSize: '100% 400%',
+    animation: 'scan 8s linear infinite',
+    pointerEvents: 'none',
+    zIndex: 1
+  },
   mainContent: {
     zIndex: 10,
     textAlign: 'center',
@@ -98,49 +127,19 @@ const LandingStyles = {
     gap: 60
   },
   identity: { display: 'flex', flexDirection: 'column', gap: 12 },
-  tagline: { fontSize: '0.6rem', fontWeight: 900, color: '#3b82f6', letterSpacing: '0.4em', fontFamily: '"JetBrains Mono"' },
-  heroText: { 
-    fontSize: '6rem', 
-    lineHeight: 0.9, 
-    margin: 0, 
-    fontWeight: 900, 
-    letterSpacing: '-0.02em',
-    color: '#fff',
-  },
-  
-  specGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 40, borderTop: '1px solid #1e293b', borderBottom: '1px solid #1e293b', padding: '24px 0' },
-  specItem: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 },
-  specLabel: { fontSize: '0.5rem', color: '#475569', fontWeight: 900, letterSpacing: '0.1em' },
-  specVal: { fontSize: '0.7rem', color: '#94a3b8', fontWeight: 800, fontFamily: '"JetBrains Mono"' },
-
+  heroText: { fontSize: '4.5rem', fontWeight: 900, letterSpacing: '-0.04em', margin: 0, lineHeight: 1 },
+  tagline: { fontSize: '0.75rem', fontWeight: 800, color: '#475569', letterSpacing: '0.2em' },
+  specGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 40, width: '100%', maxWidth: 1000 },
+  specItem: { display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'center' },
+  specLabel: { fontSize: '0.6rem', fontWeight: 800, color: '#1e293b', letterSpacing: '0.1em' },
+  specVal: { fontSize: '0.8rem', fontWeight: 900, color: '#475569', fontFamily: "'JetBrains Mono'" },
   actionGrid: { display: 'flex', gap: 24 },
-  btnPrimary: { 
-    background: '#fff', 
-    color: '#000', 
-    border: 'none', 
-    padding: '16px 32px', 
-    fontWeight: 900, 
-    fontSize: '0.75rem', 
-    cursor: 'pointer',
-    letterSpacing: '0.05em',
-    fontFamily: '"JetBrains Mono"'
-  },
-  btnSecondary: { 
-    background: 'transparent', 
-    color: '#fff', 
-    border: '1px solid #1e293b', 
-    padding: '16px 32px', 
-    fontWeight: 900, 
-    fontSize: '0.75rem', 
-    cursor: 'pointer',
-    letterSpacing: '0.05em',
-    fontFamily: '"JetBrains Mono"'
-  },
-
-  footer: { position: 'absolute', bottom: 60, width: '100%', padding: '0 60px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  footerItem: { display: 'flex', flexDirection: 'column', gap: 4 },
-  footerLabel: { fontSize: '0.5rem', fontWeight: 900, color: '#1e293b', letterSpacing: '0.1em' },
-  footerValue: { fontSize: '0.65rem', fontWeight: 800, color: '#475569', fontFamily: '"JetBrains Mono"' },
+  btnPrimary: { background: '#fff', color: '#000', border: 'none', padding: '16px 40px', fontSize: '0.85rem', fontWeight: 900, cursor: 'pointer', transition: 'all 0.2s ease', letterSpacing: '0.05em' },
+  btnSecondary: { background: 'transparent', color: '#fff', border: '1px solid #1e293b', padding: '16px 40px', fontSize: '0.85rem', fontWeight: 900, cursor: 'pointer', transition: 'all 0.2s ease', letterSpacing: '0.05em' },
+  footer: { position: 'absolute', bottom: 40, display: 'flex', gap: 60 },
+  footerItem: { display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'flex-start' },
+  footerLabel: { fontSize: '0.55rem', fontWeight: 800, color: '#1e293b', letterSpacing: '0.1em' },
+  footerValue: { fontSize: '0.75rem', fontWeight: 900, color: '#475569', fontFamily: "'JetBrains Mono'" }
 };
 
 export default LandingPage;
