@@ -45,9 +45,6 @@ export default function App() {
             </button>
           ))}
         </div>
-        <div style={styles.navRight}>
-          <div style={styles.hackBadge}>🏆 Google Hackathon 2026</div>
-        </div>
       </nav>
       )}
 

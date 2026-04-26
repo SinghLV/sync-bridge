@@ -45,9 +45,7 @@ export default function RescueDashboard({ refreshTrigger }) {
       
       <div style={S.header}>
         <div style={S.titleArea}>
-          <div style={S.badge}>SAR OPS CENTER</div>
           <h2 style={S.title}>Crisis Command Node</h2>
-          <div style={S.meta}>NET: MESH-ALPHA · TOPIC: {topic}</div>
         </div>
 
         <div style={S.simTools}>

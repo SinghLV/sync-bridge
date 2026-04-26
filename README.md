@@ -1,4 +1,4 @@
-# ⚡ Sync Bridge — When Networks Fail, Communication Survives
+#  Sync Bridge — When Networks Fail, Communication Survives
 
 **Sync Bridge** is an offline-first disaster communication system powered by Edge AI (inspired by Gemini Nano). It is designed to function even when traditional network infrastructure collapses during emergencies like earthquakes, floods, or urban disasters.
 

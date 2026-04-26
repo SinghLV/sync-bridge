@@ -92,9 +92,6 @@ export default function VictimApp({ onPacketSent }) {
         <div style={S.header}>
           <div style={S.logo}>⚡ SYNC BRIDGE</div>
           <div style={S.signalGrp}>
-             <span style={{ fontSize: '0.6rem', color: effectiveOnline ? '#30d158' : '#ff3d55' }}>
-               {effectiveOnline ? 'MESH ACTIVE' : 'OFFLINE'}
-             </span>
              <button style={S.miniBtn} onClick={() => setSimOffline(!simOffline)}>📡</button>
           </div>
         </div>

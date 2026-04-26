@@ -5,7 +5,6 @@ export default function LandingPage({ onEnter }) {
     <div style={S.container} className="animate-fade-in">
       <div style={S.noise} />
       <div style={S.hero}>
-        <div style={S.badge}>PROTOCOL V2.4 // OPERATIONAL</div>
         <h1 style={S.title}>SYNC BRIDGE</h1>
         <p style={S.subtitle}>
           When the grid goes dark, we light the path. <br />
