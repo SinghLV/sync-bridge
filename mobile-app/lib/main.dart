@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'dart:developer' as dev;
 import 'services/sync_manager.dart';
 import 'services/edge_ai_service.dart';
 
@@ -7,6 +9,13 @@ import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (e) {
+    dev.log("[ CONFIG ] .env file not found. Using fallbacks.");
+  }
+  
   await Firebase.initializeApp();
   runApp(const SyncBridgeApp());
 }
@@ -44,6 +53,8 @@ class _VictimAppScreenState extends State<VictimAppScreen> {
   bool _isAIReady = false;
   bool _hasImage = false;
   bool _simulatedImpact = false;
+  int _mockHeartRate = 82;
+  double _mockNoise = 48.5;
   String _reasoning = "";
 
   @override
@@ -106,6 +117,11 @@ class _VictimAppScreenState extends State<VictimAppScreen> {
         'hasImage': _hasImage,
         'conflict_warning': result['conflict_warning'],
         'people_count': 1,
+        'sensors': {
+          'heart_rate': _mockHeartRate,
+          'ambient_noise': _mockNoise,
+          'impact': _simulatedImpact,
+        }
       }
     };
 

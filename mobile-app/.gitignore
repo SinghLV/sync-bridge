@@ -1,0 +1,6 @@
+# Environment Variables
+.env
+.env.*
+!.env.example
+
+# (The rest of the Flutter ignores will be generated when Divit runs 'flutter create .')

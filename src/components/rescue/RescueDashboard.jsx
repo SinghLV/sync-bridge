@@ -33,17 +33,31 @@ export default function RescueDashboard({ refreshTrigger }) {
 
   const spawnSimulation = () => {
     const types = ['FI', 'FL', 'TI', 'MH'];
-    const mock = Array.from({ length: 15 }).map(() => {
-      const hasImg = Math.random() > 0.6;
-      const hasConflict = hasImg && Math.random() > 0.7;
+    const scenarios = [
+      { msg: "Everything is fine, just some smoke.", sensors: { temp: 85, h_rate: 145, motion: 'STATIC' }, truth: 15, conflict: true, reason: "HIGH_TEMP + HIGH_HR contradicts 'fine' report." },
+      { msg: "URGENT: Flooding in basement, 2 people trapped.", sensors: { water_depth: '1.2m', motion: 'ACTIVE' }, truth: 95, conflict: false, reason: "Telemetry supports reported flood level." },
+      { msg: "Stuck in elevator.", sensors: { motion: 'STATIC', battery: '12%' }, truth: 100, conflict: false, reason: "Stationary sensors match report." },
+      { msg: "Send help, the roof collapsed!", sensors: { g_force: '4.2G', motion: 'NONE' }, truth: 98, conflict: false, reason: "G-force trigger confirms structural failure." }
+    ];
+
+    const mock = Array.from({ length: 4 }).map((_, i) => {
+      const scenario = scenarios[i];
       return {
-        id: `REF-${Math.random().toString(36).slice(2, 6).toUpperCase()}`,
-        ts: Date.now() - Math.random() * 500000,
-        severity: (hasImg || Math.random() > 0.8) ? 'critical' : 'urgent',
-        packet: `C1-P${Math.floor(Math.random()*9)}-${types[Math.floor(Math.random()*4)]}-LZ0${Math.floor(Math.random()*9)}${hasImg ? '-IMG' : ''}`,
+        id: `SOS-${Math.random().toString(36).slice(2, 6).toUpperCase()}`,
+        ts: Date.now() - (i * 10000),
+        severity: scenario.truth < 50 ? 'critical' : 'urgent',
+        packet: `C1-P${i}-${types[i % 4]}-LZ0${i}-AGENTIC`,
         data: { 
-          hasImage: hasImg,
-          conflict_warning: hasConflict ? "SENSORY_CONFLICT: Visual evidence contradicts report." : null
+          truth_score: scenario.truth,
+          sensor_conflict: scenario.conflict,
+          reasoning: scenario.reason,
+          triage_code: scenario.truth < 30 ? 'ALPHA' : 'BRAVO',
+          people_count: Math.floor(Math.random() * 3) + 1,
+          sensors: {
+            heart_rate: scenario.sensors.h_rate,
+            ambient_noise: scenario.sensors.temp, // Mapping temp to noise for simulation
+            impact: scenario.sensors.motion === 'STATIC'
+          }
         },
         synced: true
       };

@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:developer' as dev;
 import 'sync_manager.dart';
 import 'package:tflite_v2/tflite_v2.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// EDGE AI SERVICE — PROJECT_SYNC_BRIDGE
 /// HYBRID ARCHITECTURE: 
@@ -13,7 +14,7 @@ class EdgeAIService {
   factory EdgeAIService() => _instance;
   EdgeAIService._internal();
 
-  static const String _apiKey = "YOUR_GEMINI_API_KEY_HERE";
+  static String get _apiKey => dotenv.env['GEMINI_API_KEY'] ?? "REPLACE_WITH_YOUR_GEMINI_API_KEY";
   static const String _modelId = "gemini-1.5-flash-latest";
 
   bool _isModelLoaded = false;
@@ -32,10 +33,10 @@ class EdgeAIService {
     
     try {
       // REAL TFLITE LOADING (Example)
-      // await Tflite.loadModel(
-      //   model: "assets/models/hazard_detector.tflite",
-      //   labels: "assets/models/labels.txt",
-      // );
+      await Tflite.loadModel(
+        model: "assets/models/hazard_detector.tflite",
+        labels: "assets/models/labels.txt",
+      );
       
       dev.log("[ TFLITE ] LOADING_QUANTIZED_SENSOR_MODELS... OK");
       dev.log("[ NANO ] MOUNTING_NLU_WEIGHTS... OK");

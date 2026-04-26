@@ -18,16 +18,18 @@ export default function EmergencyCard({ packet, onClaim, showClaim }) {
             <div className="technical-data" style={{ color: config.color }}>
               REF_ID: {id.slice(0, 8)}
             </div>
-            {packet.data?.hasImage && (
-              <div style={CardStyles.evidenceBadge}>
-                <span style={CardStyles.evidenceDot}></span>
-                EVIDENCE_LOCKED
+            {packet.data?.truth_score !== undefined && (
+              <div style={CardStyles.trustContainer}>
+                <div style={CardStyles.trustLabel}>TRUTH_ANCHOR_VERIFICATION</div>
+                <div style={CardStyles.trustTrack}>
+                  <div style={{ ...CardStyles.trustBar, width: `${packet.data.truth_score}%`, background: packet.data.truth_score > 70 ? '#10b981' : '#f59e0b' }}></div>
+                </div>
               </div>
             )}
-            {packet.data?.conflict_warning && (
+            {packet.data?.sensor_conflict && (
               <div style={CardStyles.conflictBadge}>
                 <span style={CardStyles.conflictDot}></span>
-                SENSORY_CONFLICT_DETECTED
+                SENSORY_CONFLICT: {packet.data.reasoning || "Contradiction detected"}
               </div>
             )}
           </div>
@@ -40,14 +42,32 @@ export default function EmergencyCard({ packet, onClaim, showClaim }) {
           <div style={CardStyles.mainData}>
             SIGNAL: <span className="technical-data" style={CardStyles.pktVal}>{packet.packet}</span>
           </div>
+
+          {packet.data?.sensors && (
+            <div style={CardStyles.sensorStrip}>
+               <div style={CardStyles.sensorItem}>
+                 <span style={CardStyles.sensorLabel}>HEART_RATE</span>
+                 <span style={CardStyles.sensorVal}>{packet.data.sensors.heart_rate} BPM</span>
+               </div>
+               <div style={CardStyles.sensorItem}>
+                 <span style={CardStyles.sensorLabel}>AMB_NOISE</span>
+                 <span style={CardStyles.sensorVal}>{packet.data.sensors.ambient_noise} dB</span>
+               </div>
+               <div style={CardStyles.sensorItem}>
+                 <span style={CardStyles.sensorLabel}>MOTION</span>
+                 <span style={CardStyles.sensorVal}>{packet.data.sensors.impact ? 'STATIONARY' : 'STRESS_MVMNT'}</span>
+               </div>
+            </div>
+          )}
+
           <div style={CardStyles.metadataGrid}>
             <div style={CardStyles.metaItem}>
               <span style={CardStyles.metaLabel}>ENTITY_COUNT:</span>
-              <span className="technical-data">{packet.people_count || 'ERR_NULL'}</span>
+              <span className="technical-data">{packet.people_count || packet.data?.people_count || '1'}</span>
             </div>
             <div style={CardStyles.metaItem}>
-              <span style={CardStyles.metaLabel}>SECTOR_LOC:</span>
-              <span className="technical-data">ZN-{packet.zone || '00'}</span>
+              <span style={CardStyles.metaLabel}>TRIAGE_CODE:</span>
+              <span className="technical-data">{packet.data?.triage_code || 'STANDARD'}</span>
             </div>
           </div>
         </div>
@@ -80,8 +100,12 @@ const CardStyles = {
   headerLeft: { display: 'flex', flexDirection: 'column', gap: 4 },
   evidenceBadge: { display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.45rem', color: '#10b981', fontWeight: 900, background: 'rgba(16, 185, 129, 0.1)', padding: '2px 6px', borderRadius: 2, letterSpacing: '0.05em' },
   evidenceDot: { width: 4, height: 4, borderRadius: '50%', background: '#10b981', boxShadow: '0 0 4px #10b981' },
-  conflictBadge: { display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.45rem', color: '#f59e0b', fontWeight: 900, background: 'rgba(245, 158, 11, 0.1)', padding: '2px 6px', borderRadius: 2, letterSpacing: '0.05em', marginTop: 2 },
-  conflictDot: { width: 4, height: 4, borderRadius: '50%', background: '#f59e0b', animation: 'pulse 1s infinite' },
+  conflictBadge: { display: 'flex', alignItems: 'flex-start', gap: 6, fontSize: '0.45rem', color: '#f43f5e', fontWeight: 900, background: 'rgba(244, 63, 94, 0.05)', padding: '6px 8px', borderRadius: 2, letterSpacing: '0.05em', marginTop: 8, border: '1px solid rgba(244, 63, 94, 0.2)', lineHeight: 1.4 },
+  conflictDot: { width: 4, height: 4, borderRadius: '50%', background: '#f43f5e', animation: 'pulse 1s infinite', marginTop: 2 },
+  trustContainer: { marginTop: 8, marginBottom: 4 },
+  trustLabel: { fontSize: '0.45rem', color: '#475569', fontWeight: 900, marginBottom: 4, letterSpacing: '0.05em' },
+  trustTrack: { height: 3, background: '#1f2937', borderRadius: 2, width: '100px', overflow: 'hidden' },
+  trustBar: { height: '100%', transition: 'width 1s ease-out' },
   timestamp: { fontSize: '0.6rem', color: '#475569', fontWeight: 700 },
   body: { display: 'flex', flexDirection: 'column', gap: 8 },
   mainData: { fontSize: '0.75rem', fontWeight: 800, color: '#94a3b8' },
@@ -95,4 +119,8 @@ const CardStyles = {
   claimedLabel: { fontSize: '0.5rem', color: '#475569', fontWeight: 800 },
   teamName: { color: '#fff', fontSize: '0.7rem' },
   statusText: { fontSize: '0.6rem', color: '#475569', fontWeight: 900, letterSpacing: '0.05em' },
+  sensorStrip: { display: 'flex', gap: 12, padding: '10px', background: '#0a0c10', borderRadius: 4, border: '1px dashed #1f2937', marginTop: 8 },
+  sensorItem: { display: 'flex', flexDirection: 'column', gap: 2 },
+  sensorLabel: { fontSize: '0.4rem', color: '#475569', fontWeight: 800 },
+  sensorVal: { fontSize: '0.6rem', color: '#3b82f6', fontWeight: 900, fontFamily: '"JetBrains Mono"' },
 };

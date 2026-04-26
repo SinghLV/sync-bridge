@@ -20,6 +20,7 @@ dependencies:
   tflite_v2: ^1.0.0
   flutter_tts: ^3.8.3
   connectivity_plus: ^5.0.2
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -30,6 +31,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/models/
+    - .env
   fonts:
     - family: SpaceGrotesk
       fonts:
