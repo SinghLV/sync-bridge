@@ -33,13 +33,21 @@ export default function RescueDashboard({ refreshTrigger }) {
 
   const spawnSimulation = () => {
     const types = ['FI', 'FL', 'TI', 'MH'];
-    const mock = Array.from({ length: 15 }).map(() => ({
-      id: `REF-${Math.random().toString(36).slice(2, 6).toUpperCase()}`,
-      ts: Date.now() - Math.random() * 500000,
-      severity: Math.random() > 0.8 ? 'critical' : 'urgent',
-      packet: `RAW_P_${types[Math.floor(Math.random()*4)]}_${Math.floor(Math.random()*99)}`,
-      synced: true
-    }));
+    const mock = Array.from({ length: 15 }).map(() => {
+      const hasImg = Math.random() > 0.6;
+      const hasConflict = hasImg && Math.random() > 0.7;
+      return {
+        id: `REF-${Math.random().toString(36).slice(2, 6).toUpperCase()}`,
+        ts: Date.now() - Math.random() * 500000,
+        severity: (hasImg || Math.random() > 0.8) ? 'critical' : 'urgent',
+        packet: `C1-P${Math.floor(Math.random()*9)}-${types[Math.floor(Math.random()*4)]}-LZ0${Math.floor(Math.random()*9)}${hasImg ? '-IMG' : ''}`,
+        data: { 
+          hasImage: hasImg,
+          conflict_warning: hasConflict ? "SENSORY_CONFLICT: Visual evidence contradicts report." : null
+        },
+        synced: true
+      };
+    });
     setIncidents(prev => [...prev, ...mock]);
   };
 
@@ -106,6 +114,7 @@ export default function RescueDashboard({ refreshTrigger }) {
                  </div>
                ))}
              </div>
+             <LiveDecoder packets={incidents} />
            </div>
         </section>
 
@@ -125,7 +134,58 @@ export default function RescueDashboard({ refreshTrigger }) {
                ))
              )}
            </div>
+           
+           <div style={{ ...DashStyles.label, marginTop: 32 }}>AI_DEEP_THOUGHT // LIVE_REASONING_LOG</div>
+           <ReasoningTerminal incidents={incidents} />
         </section>
+      </div>
+    </div>
+  );
+}
+
+function ReasoningTerminal({ incidents }) {
+  const logs = incidents
+    .filter(i => i.reasoning || i.data?.reasoning)
+    .slice(-10)
+    .reverse();
+
+  return (
+    <div style={DashStyles.reasoningContainer}>
+      {logs.length === 0 && <div style={DashStyles.reasoningEmpty}>WAITING_FOR_AI_TRACES...</div>}
+      {logs.map((log, i) => (
+        <div key={i} style={DashStyles.reasoningRow}>
+          <div style={DashStyles.reasoningHeader}>
+            <span style={DashStyles.reasoningSource}>[ {log.ai_source || log.data?.ai_source || 'LOCAL_AI'} ]</span>
+            <span style={DashStyles.reasoningPkt}>PKT: {log.id}</span>
+          </div>
+          <div style={DashStyles.reasoningText}>
+            {log.reasoning || log.data?.reasoning}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function LiveDecoder({ packets }) {
+  const latest = packets[packets.length - 1];
+  if (!latest) return null;
+
+  return (
+    <div style={DashStyles.decoderContainer}>
+      <div style={DashStyles.decoderHeader}>DECOMPRESSION_CORE // ACTIVE</div>
+      <div style={DashStyles.decoderGrid}>
+        <div style={DashStyles.decoderCell}>
+          <div style={DashStyles.decoderLabel}>RAW_PACKET</div>
+          <div style={DashStyles.decoderVal}>{latest.packet}</div>
+        </div>
+        <div style={DashStyles.decoderArrow}>→</div>
+        <div style={DashStyles.decoderCell}>
+          <div style={DashStyles.decoderLabel}>HYDRATED_DATA</div>
+          <div style={DashStyles.decoderVal}>
+             SEV:{latest.severity.toUpperCase()} | P:{latest.data?.people_count || latest.people || '?'}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -168,10 +228,19 @@ const DashStyles = {
   streamPkt: { color: '#3b82f6', fontWeight: 800 },
   streamMeta: { marginLeft: 'auto', color: '#10b981', opacity: 0.6 },
   feedScroll: { flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 12 },
-  emptyState: { height: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1e293b', fontSize: '0.65rem', border: '1px dashed #1f2937', fontWeight: 900 }
-};
-
-// Re-using identity styles from Landing for consistency
-const LandingStyles = {
-  identity: { display: 'flex', flexDirection: 'column' }
+  emptyState: { height: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1e293b', fontSize: '0.65rem', border: '1px dashed #1f2937', fontWeight: 900 },
+  reasoningContainer: { flex: 0.6, background: '#000', border: '1px solid #1f2937', padding: '12px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 12 },
+  reasoningEmpty: { color: '#1e293b', fontSize: '0.55rem', textAlign: 'center', marginTop: 20 },
+  reasoningRow: { borderLeft: '1px solid #3b82f6', paddingLeft: '12px', paddingBottom: '8px' },
+  reasoningHeader: { display: 'flex', justifyContent: 'space-between', marginBottom: 4 },
+  reasoningSource: { fontSize: '0.5rem', color: '#3b82f6', fontWeight: 900 },
+  reasoningPkt: { fontSize: '0.5rem', color: '#1e293b' },
+  reasoningText: { fontSize: '0.55rem', color: '#94a3b8', lineHeight: 1.4 },
+  decoderContainer: { marginTop: 16, background: '#0a0c10', border: '1px solid #3b82f633', padding: '12px' },
+  decoderHeader: { fontSize: '0.45rem', color: '#3b82f6', fontWeight: 900, marginBottom: 8, letterSpacing: 1 },
+  decoderGrid: { display: 'flex', alignItems: 'center', gap: 12 },
+  decoderCell: { flex: 1 },
+  decoderLabel: { fontSize: '0.4rem', color: '#475569', marginBottom: 2 },
+  decoderVal: { fontSize: '0.6rem', color: '#fff', fontWeight: 900, fontFamily: '"JetBrains Mono"' },
+  decoderArrow: { color: '#3b82f6', fontWeight: 900, fontSize: '0.8rem' }
 };

@@ -14,8 +14,22 @@ export default function EmergencyCard({ packet, onClaim, showClaim }) {
 
       <div style={CardStyles.content}>
         <div style={CardStyles.header}>
-          <div className="technical-data" style={{ color: config.color }}>
-            REF_ID: {id.slice(0, 8)}
+          <div style={CardStyles.headerLeft}>
+            <div className="technical-data" style={{ color: config.color }}>
+              REF_ID: {id.slice(0, 8)}
+            </div>
+            {packet.data?.hasImage && (
+              <div style={CardStyles.evidenceBadge}>
+                <span style={CardStyles.evidenceDot}></span>
+                EVIDENCE_LOCKED
+              </div>
+            )}
+            {packet.data?.conflict_warning && (
+              <div style={CardStyles.conflictBadge}>
+                <span style={CardStyles.conflictDot}></span>
+                SENSORY_CONFLICT_DETECTED
+              </div>
+            )}
           </div>
           <div style={CardStyles.timestamp}>
             REC_T: {new Date(ts).toLocaleTimeString()}
@@ -63,6 +77,11 @@ const CardStyles = {
   sidebarText: { transform: 'rotate(-90deg)', whiteSpace: 'nowrap', fontSize: '0.55rem', fontWeight: 900, color: '#000', letterSpacing: '0.1em' },
   content: { flex: 1, padding: '16px', display: 'flex', flexDirection: 'column', gap: 12 },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' },
+  headerLeft: { display: 'flex', flexDirection: 'column', gap: 4 },
+  evidenceBadge: { display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.45rem', color: '#10b981', fontWeight: 900, background: 'rgba(16, 185, 129, 0.1)', padding: '2px 6px', borderRadius: 2, letterSpacing: '0.05em' },
+  evidenceDot: { width: 4, height: 4, borderRadius: '50%', background: '#10b981', boxShadow: '0 0 4px #10b981' },
+  conflictBadge: { display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.45rem', color: '#f59e0b', fontWeight: 900, background: 'rgba(245, 158, 11, 0.1)', padding: '2px 6px', borderRadius: 2, letterSpacing: '0.05em', marginTop: 2 },
+  conflictDot: { width: 4, height: 4, borderRadius: '50%', background: '#f59e0b', animation: 'pulse 1s infinite' },
   timestamp: { fontSize: '0.6rem', color: '#475569', fontWeight: 700 },
   body: { display: 'flex', flexDirection: 'column', gap: 8 },
   mainData: { fontSize: '0.75rem', fontWeight: 800, color: '#94a3b8' },

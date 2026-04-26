@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { encodePacket } from '../../services/packetEncoder.js';
 import { enqueue, markSynced } from '../../services/offlineQueue.js';
 import { isOnline, watchNetwork, simulateSync } from '../../services/networkMonitor.js';
+import { runCloudInference } from '../../services/geminiService.js';
 import SOSButton from './SOSButton.jsx';
 
 const INCIDENT_TYPES = [
@@ -35,12 +36,30 @@ export default function VictimApp({ onPacketSent }) {
     setStep(1);
   };
 
-  const startInference = (count) => {
+  const startInference = async (count) => {
     setSelections({ ...selections, count });
     setPhase('inference_active');
     
-    setTimeout(() => {
-      const result = {
+    let result;
+    let source = 'LOCAL_EDGE_AI';
+
+    // HYBRID INTELLIGENCE LOGIC
+    if (syncMode === 'NOMINAL') {
+      const cloudResult = await runCloudInference(`Disaster: ${selections.condition.label}, People: ${count}`);
+      if (cloudResult) {
+        result = {
+          ...cloudResult,
+          people_count: count,
+          timestamp: new Date().toISOString()
+        };
+        source = 'GEMINI_1.5_CLOUD';
+      }
+    }
+
+    // Fallback to Local Edge AI (Simulated) if offline or API fails
+    if (!result) {
+      await new Promise(r => setTimeout(r, 1800)); // Local TPU simulation
+      result = {
         severity: selections.condition.sev,
         severity_code: selections.condition.sev === 'critical' ? 'C1' : 'C2',
         people_count: count,
@@ -50,10 +69,12 @@ export default function VictimApp({ onPacketSent }) {
         reasoning: "SEMANTIC_MATCH: HIGH_THREAT_KEYWORDS // PRIORITY_BOOST_ACTIVE",
         timestamp: new Date().toISOString()
       };
-      const pkt = encodePacket(result, 'NODE-' + Math.random().toString(36).slice(2,5).toUpperCase());
-      setPacket(pkt);
-      setPhase('review');
-    }, 2200);
+    }
+
+    result.ai_source = source;
+    const pkt = encodePacket(result, 'NODE-' + Math.random().toString(36).slice(2,5).toUpperCase());
+    setPacket(pkt);
+    setPhase('review');
   };
 
   const finalizeRelay = () => {
@@ -167,7 +188,7 @@ export default function VictimApp({ onPacketSent }) {
           <div style={VictimStyles.view}>
             <div style={VictimStyles.reviewCard}>
               <div style={VictimStyles.reviewHeader}>
-                <span>LOCAL_INFERENCE_DATA</span>
+                <span>SOURCE: {packet?.data?.ai_source}</span>
                 <span>ZONE: Z-04</span>
               </div>
               <div style={VictimStyles.reviewMain}>

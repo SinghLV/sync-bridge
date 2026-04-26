@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import LandingPage from './components/landingPage.jsx';
+import LandingPage from './components/LandingPage.jsx';
 import VictimApp from './components/victim/VictimApp.jsx';
 import RescueDashboard from './components/rescue/RescueDashboard.jsx';
 
