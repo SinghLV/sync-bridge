@@ -13,6 +13,9 @@ dependencies:
   provider: ^6.1.1
   http: ^1.1.0
   shared_preferences: ^2.2.2
+  # Native Firebase Sync
+  firebase_core: ^2.24.2
+  cloud_firestore: ^4.14.0
   # Edge AI Dependencies
   tflite_v2: ^1.0.0
   flutter_tts: ^3.8.3
