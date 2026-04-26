@@ -16,7 +16,7 @@ export default function App() {
     setRefresh(r => r + 1);
   }
 
-  if (view === 'landing') return <LandingPage onEnter={setView} />;
+  if (view === 'landing') return <LandingPage onAction={setView} />;
 
   return (
     <div style={styles.root}>
