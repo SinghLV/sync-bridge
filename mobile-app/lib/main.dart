@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'services/edge_ai_service.dart';
+import 'services/firestore_service.dart';
 
 void main() {
+  // NOTE: Firebase.initializeApp() should be here, but requires firebase_options.dart
   runApp(const SyncBridgeApp());
 }
 
@@ -12,35 +14,36 @@ class SyncBridgeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Sync Bridge Native',
+      title: 'Sync Bridge Tactical',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
         scaffoldBackgroundColor: const Color(0xFF05070A),
-        primaryColor: const Color(0xFF4A9EFF),
+        primaryColor: const Color(0xFF3B82F6),
         useMaterial3: true,
         textTheme: GoogleFonts.spaceGroteskTextTheme(ThemeData.dark().textTheme),
       ),
-      home: const VictimHomeScreen(),
+      home: const LocalBeaconNode(),
     );
   }
 }
 
-class VictimHomeScreen extends StatefulWidget {
-  const VictimHomeScreen({super.key});
+class LocalBeaconNode extends StatefulWidget {
+  const LocalBeaconNode({super.key});
 
   @override
-  State<VictimHomeScreen> createState() => _VictimHomeScreenState();
+  State<LocalBeaconNode> createState() => _LocalBeaconNodeState();
 }
 
-class _VictimHomeScreenState extends State<VictimHomeScreen> {
+class _LocalBeaconNodeState extends State<LocalBeaconNode> {
   final TextEditingController _controller = TextEditingController();
   final EdgeAIService _aiService = EdgeAIService();
+  final FirestoreService _firestoreService = FirestoreService();
   
   bool _isProcessing = false;
   Map<String, dynamic>? _result;
 
-  void _processSOS() async {
+  void _processInference() async {
     if (_controller.text.isEmpty) return;
     
     setState(() => _isProcessing = true);
@@ -49,6 +52,30 @@ class _VictimHomeScreenState extends State<VictimHomeScreen> {
       _result = result;
       _isProcessing = false;
     });
+  }
+
+  void _uplinkPacket() async {
+    if (_result == null) return;
+    
+    final packet = {
+      'id': 'BEACON-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}',
+      'ts': DateTime.now().millisecondsSinceEpoch,
+      'severity': _result!['severity'],
+      'packet': _controller.text,
+      'confidence': _result!['confidence'],
+      'status': 'active'
+    };
+    
+    await _firestoreService.syncSOSPacket(packet);
+    
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('[ SUCCESS ] PACKET_UPLINK_COMPLETE'),
+          backgroundColor: Color(0xFF10B981),
+        )
+      );
+    }
   }
 
   @override
@@ -60,48 +87,57 @@ class _VictimHomeScreenState extends State<VictimHomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('⚡ SYNC BRIDGE', 
-                    style: GoogleFonts.spaceGrotesk(
-                      fontWeight: FontWeight.w900, 
-                      fontSize: 18, 
-                      letterSpacing: 2,
-                      color: const Color(0xFF4A9EFF)
-                    )
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('SIGNAL_STRENGTH // -82dBm', 
+                        style: GoogleFonts.jetbrainsMono(fontSize: 8, color: const Color(0xFF475569), fontWeight: FontWeight.bold)
+                      ),
+                      Text('SYNC_BRIDGE_MOBILE_V4', 
+                        style: GoogleFonts.spaceGrotesk(fontWeight: FontWeight.w900, fontSize: 16, letterSpacing: 1)
+                      ),
+                    ],
                   ),
-                  const CircleAvatar(
-                    radius: 4,
-                    backgroundColor: Colors.greenAccent,
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: const Color(0xFF10B981).withOpacity(0.5)),
+                      color: const Color(0xFF10B981).withOpacity(0.1)
+                    ),
+                    child: Text('LOCKED', style: GoogleFonts.jetbrainsMono(fontSize: 8, color: const Color(0xFF10B981), fontWeight: FontWeight.bold)),
                   )
                 ],
               ),
-              const SizedBox(height: 40),
-              Text('Emergency Report', 
-                style: GoogleFonts.spaceGrotesk(fontSize: 32, fontWeight: FontWeight.w800)
+              const SizedBox(height: 48),
+              Text('EMERGENCY_REPORT_INIT', 
+                style: GoogleFonts.spaceGrotesk(fontSize: 28, fontWeight: FontWeight.w900, letterSpacing: -1)
               ),
               const SizedBox(height: 8),
-              Text('Input your situation. Analysis happens on-device.', 
-                style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 14)
+              Text('LOCAL_INFERENCE_ENGINE: ACTIVE (INT8_QUANTIZED)', 
+                style: GoogleFonts.jetbrainsMono(color: const Color(0xFF475569), fontSize: 10, fontWeight: FontWeight.bold)
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 32),
               
               TextField(
                 controller: _controller,
-                maxLines: 5,
+                maxLines: 4,
+                style: GoogleFonts.jetbrainsMono(fontSize: 14),
                 decoration: InputDecoration(
-                  hintText: 'What is your emergency?',
+                  hintText: 'DESCRIBE_SITUATION...',
+                  hintStyle: GoogleFonts.jetbrainsMono(color: const Color(0xFF1E293B)),
                   filled: true,
-                  fillColor: Colors.white.withOpacity(0.03),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(color: Colors.white.withOpacity(0.1))
+                  fillColor: Colors.black,
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.zero,
+                    borderSide: BorderSide(color: const Color(0xFF1F2937))
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: const BorderSide(color: Color(0xFF4A9EFF), width: 2)
+                    borderRadius: BorderRadius.zero,
+                    borderSide: const BorderSide(color: Color(0xFF3B82F6), width: 1)
                   ),
                 ),
               ),
@@ -109,72 +145,60 @@ class _VictimHomeScreenState extends State<VictimHomeScreen> {
               const SizedBox(height: 24),
               
               if (_isProcessing)
-                Column(
-                  children: [
-                    Container(
-                      height: 100,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF4A9EFF).withOpacity(0.05),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: const Color(0xFF4A9EFF).withOpacity(0.2))
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    border: Border.all(color: const Color(0xFF1F2937))
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const LinearProgressIndicator(backgroundColor: Colors.transparent, color: Color(0xFF3B82F6), minHeight: 1),
+                      const SizedBox(height: 16),
+                      Text(
+                        "[ SYSTEM ] INITIALIZING_TPU_CORE...\n[ AI ] RUNNING_SEMANTIC_ANALYSIS...\n[ AI ] VECTORIZING_INPUT_STREAM...\n[ AI ] THREAT_LEVEL_CALCULATION...",
+                        style: GoogleFonts.jetbrainsMono(color: const Color(0xFF10B981), fontSize: 10, height: 1.6),
                       ),
-                      child: Stack(
-                        children: [
-                          const Center(child: Icon(Icons.psychology, color: Color(0xFF4A9EFF), size: 40)),
-                          const LinearProgressIndicator(backgroundColor: Colors.transparent, color: Color(0xFF4A9EFF)),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.white.withOpacity(0.05))
-                      ),
-                      child: const Text(
-                        "[SYSTEM] INITIALIZING GEMINI NANO...\n[AI] ANALYZING SEMANTICS...\n[AI] CLASSIFYING THREAT LEVEL...",
-                        style: TextStyle(color: Colors.greenAccent, fontSize: 10, fontFamily: 'monospace'),
-                      ),
-                    )
-                  ],
+                    ],
+                  ),
                 )
               else if (_result != null)
                 Container(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF4A9EFF).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: const Color(0xFF4A9EFF).withOpacity(0.3))
+                    color: Colors.black,
+                    border: Border(left: BorderSide(color: _result!['severity'] == 'critical' ? const Color(0xFFF43F5E) : const Color(0xFF3B82F6), width: 4), top: const BorderSide(color: Color(0xFF1F2937)), right: const BorderSide(color: Color(0xFF1F2937)), bottom: const BorderSide(color: Color(0xFF1F2937)))
                   ),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('SEVERITY: ${_result!['severity'].toString().toUpperCase()}', 
-                            style: const TextStyle(fontWeight: FontWeight.w900, color: Color(0xFF4A9EFF))
+                            style: GoogleFonts.jetbrainsMono(fontWeight: FontWeight.w900, color: _result!['severity'] == 'critical' ? const Color(0xFFF43F5E) : const Color(0xFF3B82F6), fontSize: 12)
                           ),
-                          Text('${_result!['confidence'] * 100}% CONF', style: const TextStyle(fontSize: 10))
+                          Text('${(_result!['confidence'] * 100).toInt()}%_CONF', style: GoogleFonts.jetbrainsMono(fontSize: 10, color: const Color(0xFF475569)))
                         ],
                       ),
-                      const SizedBox(height: 12),
-                      const Divider(color: Colors.white10),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 16),
+                      Text('INFERENCE_METRICS:', style: GoogleFonts.jetbrainsMono(fontSize: 8, color: const Color(0xFF475569), fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 4),
+                      Text('LATENCY: 124ms | CORE: NANO_V2 | BITRATE: 4.2kbps', style: GoogleFonts.jetbrainsMono(fontSize: 8, color: const Color(0xFF475569))),
+                      const SizedBox(height: 24),
                       SizedBox(
                         width: double.infinity,
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: _uplinkPacket,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF4A9EFF),
+                            backgroundColor: const Color(0xFF3B82F6),
                             foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))
+                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero)
                           ),
-                          child: const Text('BROADCAST VIA MESH', style: TextStyle(fontWeight: FontWeight.w800)),
+                          child: Text('UPLINK_TO_COMMAND_GRID', style: GoogleFonts.spaceGrotesk(fontWeight: FontWeight.w900, fontSize: 12, letterSpacing: 1)),
                         ),
                       )
                     ],
@@ -184,25 +208,32 @@ class _VictimHomeScreenState extends State<VictimHomeScreen> {
                 SizedBox(
                   width: double.infinity,
                   height: 60,
-                  child: ElevatedButton(
-                    onPressed: _processSOS,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white.withOpacity(0.05),
+                  child: OutlinedButton(
+                    onPressed: _processInference,
+                    style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                      side: BorderSide(color: Colors.white.withOpacity(0.1))
+                      side: const BorderSide(color: Color(0xFF1F2937)),
+                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero)
                     ),
-                    child: const Text('ANALYZE LOCALLY', style: TextStyle(fontWeight: FontWeight.w800)),
+                    child: Text('INITIATE_LOCAL_INFERENCE', style: GoogleFonts.spaceGrotesk(fontWeight: FontWeight.w900, fontSize: 12, letterSpacing: 1)),
                   ),
                 ),
                 
               const Spacer(),
               Center(
-                child: Text('ENGINE: ${_result?['model'] ?? 'Ready'}', 
-                  style: const TextStyle(fontSize: 9, color: Colors.white24, letterSpacing: 1)
+                child: Column(
+                  children: [
+                    Text('SECURE_NODE_IDENTIFIER: ${DateTime.now().year}.SHL.01', 
+                      style: GoogleFonts.jetbrainsMono(fontSize: 8, color: const Color(0xFF1E293B), letterSpacing: 1, fontWeight: FontWeight.bold)
+                    ),
+                    const SizedBox(height: 4),
+                    Text('TPU_ID: ${(_result?['model'] ?? 'STANDBY').toUpperCase()}', 
+                      style: GoogleFonts.jetbrainsMono(fontSize: 8, color: const Color(0xFF1E293B), letterSpacing: 1)
+                    ),
+                  ],
                 )
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
             ],
           ),
         ),

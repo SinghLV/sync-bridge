@@ -2,63 +2,145 @@ import React from 'react';
 
 const LandingPage = ({ onAction }) => {
   return (
-    <div style={S.container} className="animate-fade-in">
-      <div style={S.noise} />
-      <div style={S.gridOverlay} />
+    <div style={LandingStyles.wrapper}>
+      <div className="noise-overlay" />
       
-      <div style={S.hero}>
-        <div style={S.brandTag}>NEURAL MESH PROTOCOL</div>
-        <h1 style={S.title}>SYNC BRIDGE</h1>
-        <p style={S.subtitle}>
-          AI-Driven Disaster Triage & Offline Synchronization. <br />
-          <span style={{ color: '#4a9eff', opacity: 0.8, fontSize: '0.85rem', fontWeight: 800 }}>ESTABLISHING MESH NODE // 2026</span>
-        </p>
-        
-        <div style={S.ctaArea}>
-          <button style={S.primaryBtn} onClick={() => onAction('victim')}>
-            <span>SOS BEACON</span>
-            <div style={S.btnGlow} />
+      {/* Engineering Grid & Accents */}
+      <div style={LandingStyles.gridOverlay} />
+      <div style={LandingStyles.crossTL}>+</div>
+      <div style={LandingStyles.crossTR}>+</div>
+      <div style={LandingStyles.crossBL}>+</div>
+      <div style={LandingStyles.crossBR}>+</div>
+      
+      <div style={LandingStyles.mainContent}>
+        <div style={LandingStyles.identity}>
+          <div style={LandingStyles.tagline}>PROJECT_SYNC_BRIDGE // TERMINAL_01</div>
+          <h1 style={LandingStyles.heroText}>SYNC_BRIDGE</h1>
+        </div>
+
+        <div style={LandingStyles.specGrid}>
+          <div style={LandingStyles.specItem}>
+            <span style={LandingStyles.specLabel}>CORE_PROTOCOL</span>
+            <span style={LandingStyles.specVal}>DECENTRALIZED_MESH_V1</span>
+          </div>
+          <div style={LandingStyles.specItem}>
+            <span style={LandingStyles.specLabel}>LATENCY_CAP</span>
+            <span style={LandingStyles.specVal}>&lt; 42MS_LOCAL_RELAY</span>
+          </div>
+          <div style={LandingStyles.specItem}>
+            <span style={LandingStyles.specLabel}>AI_QUANTIZATION</span>
+            <span style={LandingStyles.specVal}>INT8_TPU_OPTIMIZED</span>
+          </div>
+        </div>
+
+        <div style={LandingStyles.actionGrid}>
+          <button 
+            style={LandingStyles.btnPrimary} 
+            onClick={() => onAction('victim')}
+          >
+            [ START_BEACON_UPLINK ]
           </button>
-          <button style={S.secondaryBtn} onClick={() => onAction('dashboard')}>
-            <span>COMMAND CENTER</span>
+          
+          <button 
+            style={LandingStyles.btnSecondary} 
+            onClick={() => onAction('dashboard')}
+          >
+            [ ACCESS_COMMAND_CENTER ]
           </button>
         </div>
       </div>
 
-      <div style={S.footer}>
-        <div style={S.statItem}>
-          <div style={S.statVal}>0ms</div>
-          <div style={S.statLabel}>LATENCY</div>
+      <footer style={LandingStyles.footer}>
+        <div style={LandingStyles.footerItem}>
+          <span style={LandingStyles.footerLabel}>COORDINATES</span>
+          <span style={LandingStyles.footerValue}>38.8951° N, 77.0364° W</span>
         </div>
-        <div style={S.statItem}>
-          <div style={S.statVal}>12B</div>
-          <div style={S.statLabel}>PACKET SIZE</div>
+        <div style={LandingStyles.footerItem}>
+          <span style={LandingStyles.footerLabel}>UPLINK_STATUS</span>
+          <span style={{...LandingStyles.footerValue, color: '#10b981'}}>SIGNAL_NOMINAL</span>
         </div>
-        <div style={S.statItem}>
-          <div style={S.statVal}>EDGE</div>
-          <div style={S.statLabel}>AI TRIAGE</div>
-        </div>
-      </div>
+      </footer>
     </div>
   );
 };
 
-const S = {
-  container: { height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#02040a', position: 'relative', overflow: 'hidden', color: '#fff', textAlign: 'center' },
-  noise: { position: 'absolute', inset: 0, background: 'url(https://grainy-gradients.vercel.app/noise.svg)', opacity: 0.05, pointerEvents: 'none' },
-  gridOverlay: { position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(74, 158, 255, 0.05) 1px, transparent 0)', backgroundSize: '40px 40px', pointerEvents: 'none' },
-  hero: { position: 'relative', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24 },
-  brandTag: { fontSize: '0.65rem', fontWeight: 900, letterSpacing: '0.3em', color: '#4a9eff', marginBottom: -10 },
-  title: { fontSize: '6rem', fontWeight: 900, letterSpacing: '-0.04em', margin: 0, background: 'linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.4) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' },
-  subtitle: { fontSize: '1.2rem', lineHeight: 1.6, color: '#8899bb', fontWeight: 500 },
-  ctaArea: { display: 'flex', gap: 20, marginTop: 20 },
-  primaryBtn: { position: 'relative', background: '#fff', color: '#000', border: 'none', padding: '16px 40px', borderRadius: 100, fontWeight: 800, fontSize: '1rem', cursor: 'pointer', overflow: 'hidden' },
-  btnGlow: { position: 'absolute', inset: 0, background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)', transform: 'translateX(-100%)', animation: 'shimmer 3s infinite' },
-  secondaryBtn: { background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', padding: '16px 40px', borderRadius: 100, fontWeight: 800, fontSize: '1rem', cursor: 'pointer', backdropFilter: 'blur(10px)' },
-  footer: { position: 'absolute', bottom: 60, display: 'flex', gap: 80 },
-  statItem: { display: 'flex', flexDirection: 'column', gap: 4 },
-  statVal: { fontSize: '1.5rem', fontWeight: 900, fontFamily: "'JetBrains Mono'" },
-  statLabel: { fontSize: '0.6rem', fontWeight: 800, color: '#4a5878', letterSpacing: '0.1em' }
+const LandingStyles = {
+  wrapper: {
+    height: '100vh',
+    background: '#05070a',
+    color: '#fff',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+    fontFamily: '"Space Grotesk"',
+    overflow: 'hidden'
+  },
+  gridOverlay: {
+    position: 'absolute',
+    inset: 0,
+    backgroundImage: 'radial-gradient(rgba(255,255,255,0.03) 1px, transparent 0)',
+    backgroundSize: '40px 40px',
+    pointerEvents: 'none'
+  },
+  crossTL: { position: 'absolute', top: 40, left: 40, color: '#1e293b', fontSize: '1.2rem', fontWeight: 200 },
+  crossTR: { position: 'absolute', top: 40, right: 40, color: '#1e293b', fontSize: '1.2rem', fontWeight: 200 },
+  crossBL: { position: 'absolute', bottom: 40, left: 40, color: '#1e293b', fontSize: '1.2rem', fontWeight: 200 },
+  crossBR: { position: 'absolute', bottom: 40, right: 40, color: '#1e293b', fontSize: '1.2rem', fontWeight: 200 },
+  
+  mainContent: {
+    zIndex: 10,
+    textAlign: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 60
+  },
+  identity: { display: 'flex', flexDirection: 'column', gap: 12 },
+  tagline: { fontSize: '0.6rem', fontWeight: 900, color: '#3b82f6', letterSpacing: '0.4em', fontFamily: '"JetBrains Mono"' },
+  heroText: { 
+    fontSize: '6rem', 
+    lineHeight: 0.9, 
+    margin: 0, 
+    fontWeight: 900, 
+    letterSpacing: '-0.02em',
+    color: '#fff',
+  },
+  
+  specGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 40, borderTop: '1px solid #1e293b', borderBottom: '1px solid #1e293b', padding: '24px 0' },
+  specItem: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 },
+  specLabel: { fontSize: '0.5rem', color: '#475569', fontWeight: 900, letterSpacing: '0.1em' },
+  specVal: { fontSize: '0.7rem', color: '#94a3b8', fontWeight: 800, fontFamily: '"JetBrains Mono"' },
+
+  actionGrid: { display: 'flex', gap: 24 },
+  btnPrimary: { 
+    background: '#fff', 
+    color: '#000', 
+    border: 'none', 
+    padding: '16px 32px', 
+    fontWeight: 900, 
+    fontSize: '0.75rem', 
+    cursor: 'pointer',
+    letterSpacing: '0.05em',
+    fontFamily: '"JetBrains Mono"'
+  },
+  btnSecondary: { 
+    background: 'transparent', 
+    color: '#fff', 
+    border: '1px solid #1e293b', 
+    padding: '16px 32px', 
+    fontWeight: 900, 
+    fontSize: '0.75rem', 
+    cursor: 'pointer',
+    letterSpacing: '0.05em',
+    fontFamily: '"JetBrains Mono"'
+  },
+
+  footer: { position: 'absolute', bottom: 60, width: '100%', padding: '0 60px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
+  footerItem: { display: 'flex', flexDirection: 'column', gap: 4 },
+  footerLabel: { fontSize: '0.5rem', fontWeight: 900, color: '#1e293b', letterSpacing: '0.1em' },
+  footerValue: { fontSize: '0.65rem', fontWeight: 800, color: '#475569', fontFamily: '"JetBrains Mono"' },
 };
 
 export default LandingPage;
