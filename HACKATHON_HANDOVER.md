@@ -57,3 +57,8 @@ The `SyncManager` relies on detecting network bars (Connectivity) to trigger the
 *   [ ] Run `flutter pub get` to install all dependencies (HTTP, Provider, Connectivity, Firestore).
 *   [ ] Deploy the app to a **Physical Android Device**.
 *   [ ] **Test the Network Sensing:** Turn off WiFi and switch to cellular, or put the phone in airplane mode to watch the `SyncManager` automatically switch the UI to "OFFLINE_MESH" or "LOW_BW_MODE".
+## 🔑 API Keys & AI Setup (Lakshay's Final Check)
+To ensure the Edge AI (Mobile) and the Truth Anchor (Web) function correctly during the demo, ensure the Gemini API key is configured in both places:
+
+*   [ ] **Web App (Truth Anchor):** Ensure `VITE_GEMINI_API_KEY=your_key_here` is in the `sync-bridge/.env` file.
+*   [ ] **Mobile App (Edge AI Fallback):** Ensure `GEMINI_API_KEY=your_key_here` is in the `sync-bridge/mobile-app/.env` file. (I have created this file for you, just paste the key inside it).
