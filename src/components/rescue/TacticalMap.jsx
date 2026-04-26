@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-const MapView = ({ incidents }) => {
+const TacticalMap = ({ incidents }) => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -10,10 +10,8 @@ const MapView = ({ incidents }) => {
     let animationFrameId;
 
     const resize = () => {
-      if (canvas.parentElement) {
-        canvas.width = canvas.parentElement.offsetWidth;
-        canvas.height = canvas.parentElement.offsetHeight;
-      }
+      canvas.width = canvas.parentElement.offsetWidth;
+      canvas.height = canvas.parentElement.offsetHeight;
     };
     window.addEventListener('resize', resize);
     resize();
@@ -92,7 +90,8 @@ const MapView = ({ incidents }) => {
     <div style={S.mapWrapper}>
       <canvas ref={canvasRef} style={S.canvas} />
       <div style={S.overlay}>
-        <div style={S.activeCount}>{incidents.length} MESH NODES ACTIVE</div>
+        <div style={S.legend}>TACTICAL MESH SCANNER v2.4</div>
+        <div style={S.activeCount}>{incidents.length} NODES DETECTED</div>
       </div>
     </div>
   );
@@ -101,8 +100,9 @@ const MapView = ({ incidents }) => {
 const S = {
   mapWrapper: { width: '100%', height: '100%', background: '#050a15', borderRadius: 16, border: '1px solid rgba(255,255,255,0.05)', position: 'relative', overflow: 'hidden' },
   canvas: { width: '100%', height: '100%', display: 'block' },
-  overlay: { position: 'absolute', bottom: 12, left: 12, pointerEvents: 'none' },
-  activeCount: { fontSize: '0.55rem', color: 'rgba(74, 158, 255, 0.6)', fontWeight: 900, letterSpacing: '0.1em' }
+  overlay: { position: 'absolute', top: 12, left: 12, pointerEvents: 'none' },
+  legend: { fontSize: '0.6rem', color: '#4a9eff', fontWeight: 900, letterSpacing: '0.1em' },
+  activeCount: { fontSize: '0.5rem', color: 'rgba(255,255,255,0.4)', marginTop: 4 }
 };
 
-export default MapView;
+export default TacticalMap;

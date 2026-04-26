@@ -109,14 +109,38 @@ class _VictimHomeScreenState extends State<VictimHomeScreen> {
               const SizedBox(height: 24),
               
               if (_isProcessing)
-                const Center(
-                  child: Column(
-                    children: [
-                      CircularProgressIndicator(color: Color(0xFF4A9EFF)),
-                      SizedBox(height: 16),
-                      Text('RUNNING EDGE AI INFERENCE...', style: TextStyle(fontSize: 10, letterSpacing: 1, fontWeight: FontWeight.bold))
-                    ],
-                  ),
+                Column(
+                  children: [
+                    Container(
+                      height: 100,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF4A9EFF).withOpacity(0.05),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: const Color(0xFF4A9EFF).withOpacity(0.2))
+                      ),
+                      child: Stack(
+                        children: [
+                          const Center(child: Icon(Icons.psychology, color: Color(0xFF4A9EFF), size: 40)),
+                          const LinearProgressIndicator(backgroundColor: Colors.transparent, color: Color(0xFF4A9EFF)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.white.withOpacity(0.05))
+                      ),
+                      child: const Text(
+                        "[SYSTEM] INITIALIZING GEMINI NANO...\n[AI] ANALYZING SEMANTICS...\n[AI] CLASSIFYING THREAT LEVEL...",
+                        style: TextStyle(color: Colors.greenAccent, fontSize: 10, fontFamily: 'monospace'),
+                      ),
+                    )
+                  ],
                 )
               else if (_result != null)
                 Container(

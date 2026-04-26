@@ -1,15 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MapView from './MapView.jsx';
 import EmergencyCard from './EmergencyCard.jsx';
 import { getNtfyTopic } from '../../services/cloudSync.js';
 import { useSync } from '../../hooks/useSync.js';
+import { Howl } from 'howler';
+
+const alertSound = new Howl({
+  src: ['https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3'],
+  volume: 0.5
+});
 
 export default function RescueDashboard({ refreshTrigger }) {
   const { incidents, setIncidents, isSyncing } = useSync(refreshTrigger);
   const [activeTab, setActiveTab] = useState('active'); 
   const [showAlert, setShowAlert] = useState(false);
+  const [prevCount, setPrevCount] = useState(0);
   
   const topic = getNtfyTopic();
+
+  useEffect(() => {
+    if (incidents.length > prevCount) {
+      const latest = incidents[incidents.length - 1];
+      if (latest.severity === 'critical') {
+        alertSound.play();
+        setShowAlert(true);
+        setTimeout(() => setShowAlert(false), 4000);
+      }
+      setPrevCount(incidents.length);
+    }
+  }, [incidents.length]);
 
   const handleClaim = (id) => {
     setIncidents(prev => prev.map(p => p.id === id ? { ...p, status: 'claimed', claimedBy: 'TEAM-A1' } : p));
