@@ -1,0 +1,34 @@
+moduledependenciestarget: \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestoreInternal.build/module.modulemap \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/Target\ Support\ Files/FirebaseFirestoreInternal/FirebaseFirestoreInternal-umbrella.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.1.sdk/System/Library/Frameworks/Cocoa.framework/Modules/module.modulemap \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.1.sdk/System/Library/Frameworks/Foundation.framework/Modules/module.modulemap \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRAggregateField.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRAggregateQuery.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRAggregateSource.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRAggregateQuerySnapshot.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRCollectionReference.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRQuery.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRFirestoreSource.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRListenerRegistration.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRSnapshotListenOptions.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRDocumentChange.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRDocumentReference.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRDocumentSnapshot.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FirebaseFirestore.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRFieldPath.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRFieldValue.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRFilter.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRFirestore.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRFirestoreErrors.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRFirestoreSettings.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRGeoPoint.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRLoadBundleTask.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRLocalCacheSettings.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRQuerySnapshot.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRSnapshotMetadata.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRTransaction.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRTransactionOptions.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRWriteBatch.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRPersistentCacheIndexManager.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Source/Public/FirebaseFirestore/FIRVectorValue.h

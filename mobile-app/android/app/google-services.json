@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "578012038991",
+    "project_id": "sync-bridge-f88c2",
+    "storage_bucket": "sync-bridge-f88c2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:578012038991:android:1309980c9daffb4e81e73a",
+        "android_client_info": {
+          "package_name": "com.syncbridge.sync_bridge_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVdgFT5juv-AKhCvraxg11Q0dij9kTyg4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

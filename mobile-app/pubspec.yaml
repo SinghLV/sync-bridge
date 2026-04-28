@@ -1,6 +1,7 @@
 name: sync_bridge_mobile
 description: Native Disaster Communication Client with Edge AI.
 version: 1.0.0+1
+publish_to: 'none'
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -13,14 +14,12 @@ dependencies:
   provider: ^6.1.1
   http: ^1.1.0
   shared_preferences: ^2.2.2
-  # Native Firebase Sync
-  firebase_core: ^2.24.2
-  cloud_firestore: ^4.14.0
-  # Edge AI Dependencies
-  tflite_v2: ^1.0.0
-  flutter_tts: ^3.8.3
-  connectivity_plus: ^5.0.2
-  flutter_dotenv: ^5.1.0
+  google_generative_ai: ^0.4.0
+  firebase_core: ^3.1.0
+  cloud_firestore: ^5.0.1
+  geolocator: ^12.0.0
+  tflite_flutter: ^0.10.4
+  image_picker: ^1.0.7
 
 dev_dependencies:
   flutter_test:
@@ -29,11 +28,3 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  assets:
-    - assets/models/
-    - .env
-  fonts:
-    - family: SpaceGrotesk
-      fonts:
-        - asset: assets/fonts/SpaceGrotesk-Bold.ttf
-          weight: 700

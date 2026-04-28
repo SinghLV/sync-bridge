@@ -1,0 +1,23 @@
+{
+  "/Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestore/Firestore/Swift/Source/Codable/EncoderDecoder.swift" : {
+    "const-values" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/EncoderDecoder.swiftconstvalues",
+    "dependencies" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/EncoderDecoder.d",
+    "diagnostics" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/EncoderDecoder.dia",
+    "object" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/EncoderDecoder.o",
+    "swift-dependencies" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/EncoderDecoder.swiftdeps"
+  },
+  "/Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestore/Firestore/Swift/Source/Codable/ExplicitNull.swift" : {
+    "const-values" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/ExplicitNull.swiftconstvalues",
+    "dependencies" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/ExplicitNull.d",
+    "diagnostics" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/ExplicitNull.dia",
+    "object" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/ExplicitNull.o",
+    "swift-dependencies" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/ExplicitNull.swiftdeps"
+  },
+  "/Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestore/Firestore/Swift/Source/Codable/FieldValue+Encodable.swift" : {
+    "const-values" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/FieldValue+Encodable.swiftconstvalues",
+    "dependencies" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/FieldValue+Encodable.d",
+    "diagnostics" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/FieldValue+Encodable.dia",
+    "object" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/FieldValue+Encodable.o",
+    "swift-dependencies" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/FieldValue+Encodable.swiftdeps"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "/Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestore/Firestore/Swift/Source/Codable/GeoPoint+Codable.swift" : {
+    "const-values" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/GeoPoint+Codable.swiftconstvalues",
+    "dependencies" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/GeoPoint+Codable.d",
+    "diagnostics" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/GeoPoint+Codable.dia",
+    "object" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/GeoPoint+Codable.o",
+    "swift-dependencies" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/GeoPoint+Codable.swiftdeps"
+  },
+  "/Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestore/Firestore/Swift/Source/PropertyWrapper/FirestoreQueryObservable.swift" : {
+    "const-values" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/FirestoreQueryObservable.swiftconstvalues",
+    "dependencies" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/FirestoreQueryObservable.d",
+    "diagnostics" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/FirestoreQueryObservable.dia",
+    "object" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/FirestoreQueryObservable.o",
+    "swift-dependencies" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/FirestoreQueryObservable.swiftdeps"
+  },
+  "/Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestore/Firestore/Swift/Source/PropertyWrapper/QueryPredicate.swift" : {
+    "const-values" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/QueryPredicate.swiftconstvalues",
+    "dependencies" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/QueryPredicate.d",
+    "diagnostics" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/QueryPredicate.dia",
+    "object" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/QueryPredicate.o",
+    "swift-dependencies" : "/Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseFirestore.build/Objects-normal/arm64/QueryPredicate.swiftdeps"
+  }
+}

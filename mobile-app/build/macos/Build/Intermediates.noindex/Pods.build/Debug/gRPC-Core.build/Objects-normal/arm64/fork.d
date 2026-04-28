@@ -1,0 +1,35 @@
+dependencies: \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/src/core/util/fork.cc \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/Target\ Support\ Files/gRPC-Core/gRPC-Core-prefix.pch \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/src/core/util/fork.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/include/grpc/support/port_platform.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/include/grpc/support/atm.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/include/grpc/support/atm_gcc_atomic.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/include/grpc/support/sync.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/include/grpc/support/time.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/include/grpc/support/sync_generic.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/include/grpc/support/sync_posix.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/src/core/config/config_vars.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/strings/string_view.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/attributes.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/config.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/options.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/policy_checks.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/nullability.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/internal/nullability_impl.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/meta/type_traits.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/internal/throw_delegate.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/macros.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/optimization.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/port.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/types/optional.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/utility/utility.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/internal/inline_variable.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/internal/identity.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/internal/invoke.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/types/bad_optional_access.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/types/internal/optional.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/memory/memory.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/src/core/lib/event_engine/thread_local.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/src/core/util/no_destruct.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/src/core/util/construct_destruct.h

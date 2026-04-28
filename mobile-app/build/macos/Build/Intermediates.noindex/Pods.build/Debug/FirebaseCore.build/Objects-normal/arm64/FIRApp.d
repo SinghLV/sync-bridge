@@ -1,0 +1,24 @@
+dependencies: \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/Darwin.modulemap \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/FirebaseCore.build/module.modulemap \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseCore/FirebaseCore/Sources/FIRApp.m \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/AppKit.framework/Modules/module.modulemap \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Foundation.framework/Modules/module.modulemap \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/ObjectiveC.modulemap \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseCore/FirebaseCore/Sources/Public/FirebaseCore/FIRApp.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseCore/FirebaseCore/Sources/FIRAnalyticsConfiguration.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseCore/FirebaseCore/Sources/FIRBundleUtil.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseCore/FirebaseCore/Sources/FIRComponentContainerInternal.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseCore/FirebaseCore/Extension/FIRComponentContainer.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseCore/FirebaseCore/Extension/FIRLibrary.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseCore/FirebaseCore/Sources/FIRConfigurationInternal.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseCore/FirebaseCore/Sources/Public/FirebaseCore/FIRConfiguration.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseCore/FirebaseCore/Sources/Public/FirebaseCore/FIRLoggerLevel.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseCore/FirebaseCore/Sources/FIRFirebaseUserAgent.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseCore/FirebaseCore/Extension/FIRAppInternal.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseCore/FirebaseCore/Extension/FIRHeartbeatLogger.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseCore/FirebaseCore/Extension/FIRLogger.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseCore/FirebaseCore/Sources/FIROptionsInternal.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseCore/FirebaseCore/Sources/Public/FirebaseCore/FIROptions.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseCore/FirebaseCore/Sources/Public/FirebaseCore/FIRVersion.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/GoogleUtilities.build/module.modulemap

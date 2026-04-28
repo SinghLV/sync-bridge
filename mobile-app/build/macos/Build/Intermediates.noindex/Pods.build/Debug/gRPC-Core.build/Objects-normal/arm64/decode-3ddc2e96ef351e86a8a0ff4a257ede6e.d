@@ -1,0 +1,38 @@
+dependencies: \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/include/grpc/module.modulemap \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/mini_descriptor/decode.c \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/Target\ Support\ Files/gRPC-Core/gRPC-Core-prefix.pch \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/mini_descriptor/decode.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/base/status.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/module.modulemap \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/port/def.inc \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/DarwinFoundation1.modulemap \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/DarwinFoundation2.modulemap \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/DarwinFoundation3.modulemap \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/port/undef.inc \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/mem/arena.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/mem/alloc.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/mem/internal/arena.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/mini_table/extension.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/base/descriptor_constants.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/mini_table/internal/extension.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/mini_table/internal/field.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/mini_table/internal/size_log2.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/mini_table/internal/sub.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/mini_table/message.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/mini_table/enum.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/mini_table/internal/enum.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/mini_table/field.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/mini_table/internal/message.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/mini_table/sub.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/mini_descriptor/build_enum.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/mini_descriptor/link.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/base/internal/log2.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/base/string_view.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/message/internal/map_entry.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/hash/common.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/message/internal/types.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/mini_descriptor/internal/base92.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/mini_descriptor/internal/decoder.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/mini_descriptor/internal/modifiers.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/third_party/upb/upb/mini_descriptor/internal/wire_constants.h

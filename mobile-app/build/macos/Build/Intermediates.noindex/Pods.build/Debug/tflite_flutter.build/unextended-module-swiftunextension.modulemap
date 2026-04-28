@@ -1,0 +1,4 @@
+
+module tflite_flutter.__Swift {
+  exclude header "tflite_flutter-Swift.h"
+}

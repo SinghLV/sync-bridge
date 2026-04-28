@@ -1,0 +1,19 @@
+{
+  "" : {
+    "diagnostics" : "/Users/divitgupta/Downloads/sync-bridge 2/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/tflite_flutter.build/Objects-normal/arm64/tflite_flutter-primary.dia",
+    "emit-module-dependencies" : "/Users/divitgupta/Downloads/sync-bridge 2/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/tflite_flutter.build/Objects-normal/arm64/tflite_flutter-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/divitgupta/Downloads/sync-bridge 2/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/tflite_flutter.build/Objects-normal/arm64/tflite_flutter-primary-emit-module.dia",
+    "pch" : "/Users/divitgupta/Downloads/sync-bridge 2/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/tflite_flutter.build/Objects-normal/arm64/tflite_flutter-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/divitgupta/Downloads/sync-bridge 2/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/tflite_flutter.build/Objects-normal/arm64/tflite_flutter-primary.swiftdeps"
+  },
+  "/Users/divitgupta/.pub-cache/hosted/pub.dev/tflite_flutter-0.10.4/macos/Classes/TfliteFlutterPlugin.swift" : {
+    "const-values" : "/Users/divitgupta/Downloads/sync-bridge 2/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/tflite_flutter.build/Objects-normal/arm64/TfliteFlutterPlugin.swiftconstvalues",
+    "dependencies" : "/Users/divitgupta/Downloads/sync-bridge 2/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/tflite_flutter.build/Objects-normal/arm64/TfliteFlutterPlugin.d",
+    "diagnostics" : "/Users/divitgupta/Downloads/sync-bridge 2/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/tflite_flutter.build/Objects-normal/arm64/TfliteFlutterPlugin.dia",
+    "index-unit-output-path" : "/Pods.build/Debug/tflite_flutter.build/Objects-normal/arm64/TfliteFlutterPlugin.o",
+    "llvm-bc" : "/Users/divitgupta/Downloads/sync-bridge 2/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/tflite_flutter.build/Objects-normal/arm64/TfliteFlutterPlugin.bc",
+    "object" : "/Users/divitgupta/Downloads/sync-bridge 2/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/tflite_flutter.build/Objects-normal/arm64/TfliteFlutterPlugin.o",
+    "swift-dependencies" : "/Users/divitgupta/Downloads/sync-bridge 2/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/tflite_flutter.build/Objects-normal/arm64/TfliteFlutterPlugin.swiftdeps",
+    "swiftmodule" : "/Users/divitgupta/Downloads/sync-bridge 2/mobile-app/build/macos/Build/Intermediates.noindex/Pods.build/Debug/tflite_flutter.build/Objects-normal/arm64/TfliteFlutterPlugin~partial.swiftmodule"
+  }
+}

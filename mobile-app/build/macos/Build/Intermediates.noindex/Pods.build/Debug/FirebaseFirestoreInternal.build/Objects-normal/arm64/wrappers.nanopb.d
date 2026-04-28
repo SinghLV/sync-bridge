@@ -1,0 +1,31 @@
+dependencies: \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Protos/nanopb/google/protobuf/wrappers.nanopb.cc \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/Protos/nanopb/google/protobuf/wrappers.nanopb.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/nanopb/pb.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/FirebaseFirestoreInternal/Firestore/core/src/nanopb/pretty_printing.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/strings/str_cat.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/attributes.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/config.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/options.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/policy_checks.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/nullability.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/internal/nullability_impl.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/meta/type_traits.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/port.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/optimization.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/strings/has_absl_stringify.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/strings/string_view.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/internal/throw_delegate.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/macros.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/strings/internal/resize_uninitialized.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/strings/internal/stringify_sink.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/strings/numbers.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/internal/endian.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/casts.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/internal/identity.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/internal/unaligned_access.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/numeric/bits.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/numeric/internal/bits.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/numeric/int128.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/types/compare.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/numeric/int128_have_intrinsic.inc

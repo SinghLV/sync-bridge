@@ -1,0 +1,40 @@
+dependencies: \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/src/core/ext/transport/chttp2/transport/varint.cc \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/Target\ Support\ Files/gRPC-Core/gRPC-Core-prefix.pch \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/src/core/ext/transport/chttp2/transport/varint.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/macos/Pods/gRPC-Core/include/grpc/support/port_platform.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/log/check.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/log/internal/check_impl.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/optimization.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/config.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/options.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/policy_checks.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/log/internal/check_op.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/attributes.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/log/internal/nullguard.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/log/internal/nullstream.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/log_severity.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/strings/string_view.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/nullability.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/internal/nullability_impl.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/meta/type_traits.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/internal/throw_delegate.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/macros.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/port.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/log/internal/strip.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/log/internal/log_message.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/base/internal/errno_saver.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/log/log_entry.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/log/internal/config.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/time/time.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/time/civil_time.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/time/internal/cctz/include/cctz/civil_time.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/time/internal/cctz/include/cctz/civil_time_detail.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/time/internal/cctz/include/cctz/time_zone.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/types/span.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/types/internal/span.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/algorithm/algorithm.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/log/log_sink.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/strings/has_absl_stringify.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/log/internal/conditions.h \
+  /Users/divitgupta/Downloads/sync-bridge/mobile-app/build/macos/Build/Products/Debug/abseil/absl.framework/Headers/log/internal/voidify.h

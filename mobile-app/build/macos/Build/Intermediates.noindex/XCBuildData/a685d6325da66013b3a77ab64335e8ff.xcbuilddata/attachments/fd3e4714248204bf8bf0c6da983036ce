@@ -1,0 +1,5 @@
+
+module tflite_flutter.Swift {
+  header "tflite_flutter-Swift.h"
+  requires objc
+}
