@@ -1,0 +1,1 @@
+ /Users/divitgupta/Desktop/sync-bridge/mobile-app/build/269cd941cea0c22e1145ad5712456124/dart_build_result.json:  /Users/divitgupta/Desktop/sync-bridge/mobile-app/.dart_tool/package_config.json /Users/divitgupta/Desktop/sync-bridge/mobile-app/pubspec.yaml /opt/homebrew/share/flutter/bin/cache/dart-sdk/version

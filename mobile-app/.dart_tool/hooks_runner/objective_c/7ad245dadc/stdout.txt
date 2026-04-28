@@ -1,0 +1,61 @@
+Running `(cd /Users/divitgupta/.pub-cache/hosted/pub.dev/objective_c-9.3.0/; TMPDIR=/var/folders/21/f63mln3n6xv0h14bh0tlyykm0000gn/T/ PATH=/Library/Frameworks/Python.framework/Versions/3.13/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/opt/pkg/env/active/bin:/opt/pmk/env/global/bin:/Library/Apple/usr/bin:/Applications/Wireshark.app/Contents/MacOS:/opt/homebrew/bin:/Applications/nmap.app/Contents/Resources/bin:/Applications/ncat.app/Contents/Resources/bin:/Applications/nping.app/Contents/Resources/bin:/Applications/zenmap.app/Contents/Resources/bin:/Users/divitgupta/.codex/tmp/arg0/codex-arg04ewVOn:/Users/divitgupta/.antigravity/antigravity/bin:/opt/anaconda3/bin:/Library/Frameworks/Python.framework/Versions/3.13/bin:/Applications/Codex.app/Contents/Resources HOME=/Users/divitgupta /opt/homebrew/share/flutter/bin/cache/dart-sdk/bin/dart --packages=/Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/package_config.json /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/objective_c/7ad245dadc/hook.dill --config=/Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/objective_c/7ad245dadc/input.json )`.
+INFO: 2026-04-28 17:20:50.011736: Running `/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang --version`.
+
+INFO: 2026-04-28 17:20:50.245865: Running `/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang --version`.
+
+INFO: 2026-04-28 17:20:50.282335: Running: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.1.sdk -target arm64-apple-darwin -mmacos-version-min=13 -c /Users/divitgupta/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/include/dart_api_dl.c -fpic -I src -o /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/src/include/dart_api_dl.c.o
+
+INFO: 2026-04-28 17:20:50.283488: Running: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.1.sdk -target arm64-apple-darwin -mmacos-version-min=13 -c /Users/divitgupta/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/objective_c.c -fpic -I src -o /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/src/objective_c.c.o
+
+INFO: 2026-04-28 17:20:50.284135: Running: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.1.sdk -target arm64-apple-darwin -mmacos-version-min=13 -c /Users/divitgupta/.pub-cache/hosted/pub.dev/objective_c-9.3.0/test/util.c -fpic -I src -o /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/test/util.c.o
+
+INFO: 2026-04-28 17:20:50.284714: Running: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.1.sdk -target arm64-apple-darwin -mmacos-version-min=13 -x objective-c -fobjc-arc -c /Users/divitgupta/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/input_stream_adapter.m -fpic -I src -o /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/src/input_stream_adapter.m.o
+
+INFO: 2026-04-28 17:20:50.285416: Running: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.1.sdk -target arm64-apple-darwin -mmacos-version-min=13 -x objective-c -fobjc-arc -c /Users/divitgupta/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/objective_c.m -fpic -I src -o /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/src/objective_c.m.o
+
+INFO: 2026-04-28 17:20:50.286075: Running: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.1.sdk -target arm64-apple-darwin -mmacos-version-min=13 -x objective-c -fobjc-arc -c /Users/divitgupta/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/ns_number.m -fpic -I src -o /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/src/ns_number.m.o
+
+INFO: 2026-04-28 17:20:50.286456: Running: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.1.sdk -target arm64-apple-darwin -mmacos-version-min=13 -x objective-c -fobjc-arc -c /Users/divitgupta/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/protocol.m -fpic -I src -o /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/src/protocol.m.o
+
+INFO: 2026-04-28 17:20:50.287008: Running: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.1.sdk -target arm64-apple-darwin -mmacos-version-min=13 -x objective-c -fobjc-arc -c /Users/divitgupta/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/objective_c_bindings_generated.m -fpic -I src -o /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/src/objective_c_bindings_generated.m.o
+
+INFO: 2026-04-28 17:20:50.574452: 
+INFO: 2026-04-28 17:20:50.574660: 
+INFO: 2026-04-28 17:20:50.574760: Generated /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/src/objective_c.c.o
+INFO: 2026-04-28 17:20:50.575074: 
+INFO: 2026-04-28 17:20:50.575147: 
+INFO: 2026-04-28 17:20:50.575184: Generated /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/src/include/dart_api_dl.c.o
+
+INFO: 2026-04-28 17:20:50.601514: 
+INFO: 2026-04-28 17:20:50.601705: 
+INFO: 2026-04-28 17:20:50.601773: Generated /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/src/protocol.m.o
+INFO: 2026-04-28 17:20:50.602065: 
+INFO: 2026-04-28 17:20:50.602127: 
+INFO: 2026-04-28 17:20:50.602157: Generated /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/src/observer.m.o
+
+INFO: 2026-04-28 17:20:50.640311: 
+INFO: 2026-04-28 17:20:50.640458: 
+INFO: 2026-04-28 17:20:50.640510: Generated /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/test/util.c.o
+
+INFO: 2026-04-28 17:20:51.462309: 
+INFO: 2026-04-28 17:20:51.462410: 
+INFO: 2026-04-28 17:20:51.462451: Generated /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/src/ns_number.m.o
+
+INFO: 2026-04-28 17:20:51.482461: 
+INFO: 2026-04-28 17:20:51.482690: 
+INFO: 2026-04-28 17:20:51.482796: Generated /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/src/objective_c.m.o
+
+INFO: 2026-04-28 17:20:51.499305: 
+INFO: 2026-04-28 17:20:51.499438: 
+INFO: 2026-04-28 17:20:51.499505: Generated /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/src/input_stream_adapter.m.o
+
+INFO: 2026-04-28 17:20:51.568002: 
+INFO: 2026-04-28 17:20:51.568096: 
+INFO: 2026-04-28 17:20:51.568159: Generated /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/src/objective_c_bindings_generated.m.o
+
+INFO: 2026-04-28 17:20:51.568801: Running: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -shared -Wl,-encryptable -undefined dynamic_lookup -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.1.sdk -target arm64-apple-darwin -mmacos-version-min=13 /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/src/include/dart_api_dl.c.o /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/src/objective_c.c.o /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/test/util.c.o /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/src/input_stream_adapter.m.o /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/src/objective_c.m.o /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/src/observer.m.o /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/src/ns_number.m.o /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/src/protocol.m.o /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/obj/src/objective_c_bindings_generated.m.o -o /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/objective_c.dylib
+
+INFO: 2026-04-28 17:20:51.790553: 
+INFO: 2026-04-28 17:20:51.790710: 
+INFO: 2026-04-28 17:20:51.790740: Generated /Users/divitgupta/Downloads/sync-bridge/mobile-app/.dart_tool/hooks_runner/shared/objective_c/build/7ad245dadc/objective_c.dylib
+
