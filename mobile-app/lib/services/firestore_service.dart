@@ -96,6 +96,21 @@ class FirestoreService {
   List<RescueTeam> get teamRoster => List.unmodifiable(_teamRoster);
   int get offlineQueueLength => _offlineQueue.length;
 
+  Future<SyncDispatchResult> bufferSOSPacket(Incident incident) async {
+    _offlineQueue.add(
+      incident.copyWith(
+        syncMode: 'OFFLINE_QUEUED',
+        synced: false,
+      ),
+    );
+    await _saveOfflineQueue();
+    return SyncDispatchResult(
+      outcome: SyncDispatchOutcome.buffered,
+      queuedCount: _offlineQueue.length,
+      syncMode: 'OFFLINE_QUEUED',
+    );
+  }
+
   Map<String, dynamic> _serializeIncident(
     Incident incident, {
     required String syncMode,
@@ -294,18 +309,7 @@ class FirestoreService {
       );
     } catch (e) {
       print('⚠️ [SyncBridge] Sync failed — saving to Offline Queue: $e');
-      _offlineQueue.add(
-        incident.copyWith(
-          syncMode: 'OFFLINE_QUEUED',
-          synced: false,
-        ),
-      );
-      await _saveOfflineQueue();
-      return SyncDispatchResult(
-        outcome: SyncDispatchOutcome.buffered,
-        queuedCount: _offlineQueue.length,
-        syncMode: 'OFFLINE_QUEUED',
-      );
+      return bufferSOSPacket(incident);
     }
   }
 

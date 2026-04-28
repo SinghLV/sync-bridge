@@ -188,7 +188,10 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
       },
     );
 
-    final dispatchResult = await FirestoreService().syncSOSPacket(incident);
+    final firestoreService = FirestoreService();
+    final dispatchResult = _bridgeMode == BridgeMode.blackout
+        ? await firestoreService.bufferSOSPacket(incident)
+        : await firestoreService.syncSOSPacket(incident);
 
     // 3. Move to Success Screen (Fast transition)
     if (mounted) {
