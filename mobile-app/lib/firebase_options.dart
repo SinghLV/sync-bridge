@@ -44,7 +44,7 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDrd80etjjlmiEHXBMgXwMDjArbwpisEEo',
+    apiKey: 'YOUR Gemini API key',
     appId: '1:578012038991:web:36b3f6e93c89b10c81e73a',
     messagingSenderId: '578012038991',
     projectId: 'sync-bridge-f88c2',
@@ -53,7 +53,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCVdgFT5juv-AKhCvraxg11Q0dij9kTyg4',
+    apiKey: 'YOUR Gemini API key',
     appId: '1:578012038991:android:1309980c9daffb4e81e73a',
     messagingSenderId: '578012038991',
     projectId: 'sync-bridge-f88c2',
@@ -61,7 +61,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDRfJIzhN2q5c5AvftPldfldffy_GZdDbU',
+    apiKey: 'YOUR Gemini API key',
     appId: '1:578012038991:ios:5ca562ba3f75571881e73a',
     messagingSenderId: '578012038991',
     projectId: 'sync-bridge-f88c2',
@@ -70,7 +70,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDRfJIzhN2q5c5AvftPldfldffy_GZdDbU',
+    apiKey: 'YOUR Gemini API key',
     appId: '1:578012038991:ios:5ca562ba3f75571881e73a',
     messagingSenderId: '578012038991',
     projectId: 'sync-bridge-f88c2',
