@@ -44,37 +44,37 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'YOUR Gemini API key',
-    appId: '1:578012038991:web:36b3f6e93c89b10c81e73a',
-    messagingSenderId: '578012038991',
-    projectId: 'sync-bridge-f88c2',
-    authDomain: 'sync-bridge-f88c2.firebaseapp.com',
-    storageBucket: 'sync-bridge-f88c2.firebasestorage.app',
+    apiKey: 'YOUR_WEB_API_KEY',
+    appId: 'YOUR_WEB_APP_ID',
+    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
+    projectId: 'your-project-id',
+    authDomain: 'your-project-id.firebaseapp.com',
+    storageBucket: 'your-project-id.firebasestorage.app',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'YOUR Gemini API key',
-    appId: '1:578012038991:android:1309980c9daffb4e81e73a',
-    messagingSenderId: '578012038991',
-    projectId: 'sync-bridge-f88c2',
-    storageBucket: 'sync-bridge-f88c2.firebasestorage.app',
+    apiKey: 'YOUR_ANDROID_API_KEY',
+    appId: 'YOUR_ANDROID_APP_ID',
+    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
+    projectId: 'your-project-id',
+    storageBucket: 'your-project-id.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'YOUR Gemini API key',
-    appId: '1:578012038991:ios:5ca562ba3f75571881e73a',
-    messagingSenderId: '578012038991',
-    projectId: 'sync-bridge-f88c2',
-    storageBucket: 'sync-bridge-f88c2.firebasestorage.app',
+    apiKey: 'YOUR_IOS_API_KEY',
+    appId: 'YOUR_IOS_APP_ID',
+    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
+    projectId: 'your-project-id',
+    storageBucket: 'your-project-id.firebasestorage.app',
     iosBundleId: 'com.syncbridge.syncBridgeMobile',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'YOUR Gemini API key',
-    appId: '1:578012038991:ios:5ca562ba3f75571881e73a',
-    messagingSenderId: '578012038991',
-    projectId: 'sync-bridge-f88c2',
-    storageBucket: 'sync-bridge-f88c2.firebasestorage.app',
+    apiKey: 'YOUR_MACOS_API_KEY',
+    appId: 'YOUR_MACOS_APP_ID',
+    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
+    projectId: 'your-project-id',
+    storageBucket: 'your-project-id.firebasestorage.app',
     iosBundleId: 'com.syncbridge.syncBridgeMobile',
   );
 
