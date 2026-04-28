@@ -116,5 +116,3 @@ class _MainRouterState extends State<MainRouter> {
     }
   }
 }
-  }
-}

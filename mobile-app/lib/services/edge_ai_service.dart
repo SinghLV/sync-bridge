@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:google_generative_ai/google_generative_ai.dart';
-import 'package:tflite_flutter/tflite_flutter.dart';
+import 'package:tflite_flutter/tflite_flutter.dart'
+    if (dart.library.html) 'tflite_stub.dart';
 import '../models/incident.dart';
 
 // Key is injected at build time via:
@@ -14,6 +15,7 @@ const _kFallbackSource = 'OFFLINE_KEYWORD_FALLBACK';
 const _kRemoteRuntime = 'CLOUD_GEMINI_1.5';
 const _kLocalNanoRuntime = 'ON_DEVICE_GEMINI_NANO';
 const _kFallbackRuntime = 'EDGE_AI_KEYWORD_ENGINE';
+const _kOfflineRuntime = 'OFFLINE_NATIVE_FALLBACK';
 const _kTfliteStatus = 'READY_BYPASS_ACTIVE';
 
 /// EDGE AI SERVICE — SYNC BRIDGE
@@ -93,7 +95,7 @@ class EdgeAIService {
     
     // Simulate Gemini Nano Local Context if no model/api is ready
     if (_model == null) {
-      final textResult = await _fallbackLogic(message, peopleCount, sensorData: sensorData);
+      final textResult = _fallbackLogic(message, peopleCount, sensorData: sensorData);
       return _mergeDualResults(textResult, visionResult);
     }
 
@@ -354,7 +356,5 @@ class EdgeAIService {
       if (message.contains(needle)) return true;
     }
     return false;
-  }
-}
   }
 }

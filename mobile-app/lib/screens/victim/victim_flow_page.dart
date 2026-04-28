@@ -19,7 +19,8 @@ class VictimFlowPage extends StatefulWidget {
 }
 
 class _VictimFlowPageState extends State<VictimFlowPage> {
-  int _step = 0; // 0: Category, 1: Description (if other), 2: Phone, 3: Count, 4: Inference, 5: Review, 6: Success
+  int _step =
+      0; // 0: Category, 1: Description (if other), 2: Phone, 3: Count, 4: Inference, 5: Review, 6: Success
   String? _selectedCategory;
   String? _selectedCode;
   String _customDescription = "";
@@ -31,12 +32,46 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
   String _locationStatus = 'GPS_LOCK_PENDING';
   LiveLocationLock? _liveLocation;
   Future<bool>? _locationRequest;
+  SyncDispatchResult? _lastDispatchResult;
 
   final DeviceLocationService _locationService = DeviceLocationService();
   final NetworkService _networkService = NetworkService();
   StreamSubscription? _networkSub;
   int _signalDbm = -82;
   BridgeMode _bridgeMode = BridgeMode.nominal;
+
+  String get _bridgeLabel {
+    switch (_bridgeMode) {
+      case BridgeMode.nominal:
+        return 'NETWORK_READY';
+      case BridgeMode.ultraLight:
+        return 'LOW_BW_MODE';
+      case BridgeMode.blackout:
+        return 'OFFLINE_MESH';
+    }
+  }
+
+  String get _bridgeRoute {
+    switch (_bridgeMode) {
+      case BridgeMode.nominal:
+        return 'REAL_TIME';
+      case BridgeMode.ultraLight:
+        return 'BIT_PACKED';
+      case BridgeMode.blackout:
+        return 'BUFFERED';
+    }
+  }
+
+  String get _bridgeSummary {
+    switch (_bridgeMode) {
+      case BridgeMode.nominal:
+        return 'Full uplink path with cloud-assisted triage available.';
+      case BridgeMode.ultraLight:
+        return 'Bandwidth-aware relay mode for unstable links.';
+      case BridgeMode.blackout:
+        return 'Packets stay in the local queue until a mesh bridge opens.';
+    }
+  }
 
   @override
   void initState() {
@@ -79,9 +114,12 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
 
   void _runInference() async {
     _resetLocationLock();
+    _lastDispatchResult = null;
     setState(() => _step = 4); // Move to inference
     final ai = EdgeAIService();
-    final message = _selectedCode == 'OT' ? _customDescription : "Emergency in $_selectedCategory";
+    final message = _selectedCode == 'OT'
+        ? _customDescription
+        : "Emergency in $_selectedCategory";
     final result = await ai.classifySOS(message, peopleCount: _peopleCount);
     if (!mounted) return;
     setState(() {
@@ -109,27 +147,33 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
       id: 'BEACON-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}',
       timestamp: DateTime.now(),
       severity: _inferenceResult!['severity'],
-      category: _selectedCode == 'OT' ? 'CUSTOM_INCIDENT' : _inferenceResult!['category'],
+      category: _selectedCode == 'OT'
+          ? 'CUSTOM_INCIDENT'
+          : _inferenceResult!['category'],
       categoryCode: _selectedCode!,
       peopleCount: _peopleCount,
       latitude: _liveLocation!.latitude,
       longitude: _liveLocation!.longitude,
-      rawPacket: 'PKT_${_selectedCode}_0${_peopleCount}_${_inferenceResult!['severity'].toString().split('.').last[0].toUpperCase()}',
+      rawPacket:
+          'PKT_${_selectedCode}_0${_peopleCount}_${_inferenceResult!['severity'].toString().split('.').last[0].toUpperCase()}',
       confidence: _inferenceResult!['confidence'],
       description: _selectedCode == 'OT' ? _customDescription : null,
       phoneNumber: _phoneNumber,
       recResponders: _inferenceResult!['rec_responders'],
       recTeamType: _inferenceResult!['rec_team_type'],
       aiSource: _inferenceResult!['ai_source']?.toString(),
-      aiModel: (_inferenceResult!['ai_model'] ?? _inferenceResult!['model'])?.toString(),
+      aiModel: (_inferenceResult!['ai_model'] ?? _inferenceResult!['model'])
+          ?.toString(),
       reasoning: _inferenceResult!['reasoning']?.toString(),
       truthScore: _asDouble(_inferenceResult!['truth_score']),
       sensorConflict: _inferenceResult!['sensor_conflict'] == true,
       triageCode: _inferenceResult!['triage_code']?.toString(),
       runtimeMode: _inferenceResult!['runtime_mode']?.toString(),
-      syncMode: _bridgeMode == BridgeMode.nominal 
-          ? 'NOMINAL_UPLINK' 
-          : (_bridgeMode == BridgeMode.ultraLight ? 'ULTRA_LIGHT_PACKET' : 'OFFLINE_QUEUED'),
+      syncMode: _bridgeMode == BridgeMode.nominal
+          ? 'NOMINAL_UPLINK'
+          : (_bridgeMode == BridgeMode.ultraLight
+              ? 'ULTRA_LIGHT_PACKET'
+              : 'OFFLINE_QUEUED'),
       data: {
         'ai_source': _inferenceResult!['ai_source'],
         'ai_model': _inferenceResult!['ai_model'] ?? _inferenceResult!['model'],
@@ -144,7 +188,7 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
       },
     );
 
-    await FirestoreService().syncSOSPacket(incident);
+    final dispatchResult = await FirestoreService().syncSOSPacket(incident);
 
     // 3. Move to Success Screen (Fast transition)
     if (mounted) {
@@ -152,6 +196,7 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
         if (mounted) {
           setState(() {
             _isSyncing = false;
+            _lastDispatchResult = dispatchResult;
             _step = 6;
           });
         }
@@ -196,9 +241,8 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
     if (mounted) {
       setState(() {
         _isResolvingLocation = true;
-        _locationStatus = forceRefresh
-            ? 'REFRESHING_GPS_LOCK'
-            : 'ACQUIRING_LIVE_GPS_LOCK';
+        _locationStatus =
+            forceRefresh ? 'REFRESHING_GPS_LOCK' : 'ACQUIRING_LIVE_GPS_LOCK';
       });
     }
 
@@ -262,21 +306,23 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('SIGNAL_STRENGTH // $_signalDbm dBm', 
-            style: GoogleFonts.jetBrainsMono(
-              fontSize: 8, 
-              color: _bridgeMode == BridgeMode.nominal 
-                  ? const Color(0xFF3B82F6) 
-                  : (_bridgeMode == BridgeMode.ultraLight ? const Color(0xFFF59E0B) : const Color(0xFFF43F5E)), 
-              fontWeight: FontWeight.bold
-            )
-          ),
+          Text('SIGNAL_STRENGTH // $_signalDbm dBm',
+              style: GoogleFonts.jetBrainsMono(
+                  fontSize: 8,
+                  color: _bridgeMode == BridgeMode.nominal
+                      ? const Color(0xFF3B82F6)
+                      : (_bridgeMode == BridgeMode.ultraLight
+                          ? const Color(0xFFF59E0B)
+                          : const Color(0xFFF43F5E)),
+                  fontWeight: FontWeight.bold)),
           if (_step < 6)
             InkWell(
               onTap: widget.onBack,
-              child: Text('TERMINATE_SESSION', 
-                style: GoogleFonts.jetBrainsMono(fontSize: 8, color: const Color(0xFFF43F5E), fontWeight: FontWeight.bold)
-              ),
+              child: Text('TERMINATE_SESSION',
+                  style: GoogleFonts.jetBrainsMono(
+                      fontSize: 8,
+                      color: const Color(0xFFF43F5E),
+                      fontWeight: FontWeight.bold)),
             ),
         ],
       ),
@@ -285,14 +331,22 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
 
   Widget _buildBody() {
     switch (_step) {
-      case 0: return _buildCategoryGrid();
-      case 1: return _buildDescriptionInput();
-      case 2: return _buildPhoneInput();
-      case 3: return _buildCountSelector();
-      case 4: return _buildInferenceUI();
-      case 5: return _buildReviewUI();
-      case 6: return _buildSuccessUI();
-      default: return const SizedBox();
+      case 0:
+        return _buildCategoryGrid();
+      case 1:
+        return _buildDescriptionInput();
+      case 2:
+        return _buildPhoneInput();
+      case 3:
+        return _buildCountSelector();
+      case 4:
+        return _buildInferenceUI();
+      case 5:
+        return _buildReviewUI();
+      case 6:
+        return _buildSuccessUI();
+      default:
+        return const SizedBox();
     }
   }
 
@@ -303,8 +357,16 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
         key: const ValueKey('step0'),
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('INCIDENT_REPORT', style: GoogleFonts.spaceGrotesk(fontSize: 32, fontWeight: FontWeight.w900, color: Colors.white)),
-          Text('SELECT_PRIMARY_SITUATION_CODE', style: GoogleFonts.jetBrainsMono(fontSize: 10, color: const Color(0xFF475569), fontWeight: FontWeight.bold)),
+          Text('INCIDENT_REPORT',
+              style: GoogleFonts.spaceGrotesk(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white)),
+          Text('SELECT_PRIMARY_SITUATION_CODE',
+              style: GoogleFonts.jetBrainsMono(
+                  fontSize: 10,
+                  color: const Color(0xFF475569),
+                  fontWeight: FontWeight.bold)),
           const SizedBox(height: 32),
           Expanded(
             child: ListView.separated(
@@ -338,23 +400,41 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
       },
       child: TacticalContainer(
         padding: 0,
-        borderColor: isOther ? const Color(0xFF10B981) : const Color(0xFF1F2937),
+        borderColor:
+            isOther ? const Color(0xFF10B981) : const Color(0xFF1F2937),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Row(
             children: [
-              Container(width: 4, height: 24, color: isOther ? const Color(0xFF10B981) : const Color(0xFF3B82F6)),
+              Container(
+                  width: 4,
+                  height: 24,
+                  color: isOther
+                      ? const Color(0xFF10B981)
+                      : const Color(0xFF3B82F6)),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(cat['label']!, style: GoogleFonts.jetBrainsMono(fontSize: 12, fontWeight: FontWeight.w800, color: Colors.white)),
-                    Text(cat['sub']!, style: GoogleFonts.jetBrainsMono(fontSize: 8, color: const Color(0xFF475569), fontWeight: FontWeight.bold)),
+                    Text(cat['label']!,
+                        style: GoogleFonts.jetBrainsMono(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white)),
+                    Text(cat['sub']!,
+                        style: GoogleFonts.jetBrainsMono(
+                            fontSize: 8,
+                            color: const Color(0xFF475569),
+                            fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),
-              Text(cat['id']!, style: GoogleFonts.jetBrainsMono(fontSize: 10, color: const Color(0xFF1E293B), fontWeight: FontWeight.w900)),
+              Text(cat['id']!,
+                  style: GoogleFonts.jetBrainsMono(
+                      fontSize: 10,
+                      color: const Color(0xFF1E293B),
+                      fontWeight: FontWeight.w900)),
             ],
           ),
         ),
@@ -369,8 +449,16 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
         key: const ValueKey('step1'),
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('BRIEF_DESCRIPTION', style: GoogleFonts.spaceGrotesk(fontSize: 32, fontWeight: FontWeight.w900, color: Colors.white)),
-          Text('DESCRIBE_SITUATION_IN_FEW_WORDS', style: GoogleFonts.jetBrainsMono(fontSize: 10, color: const Color(0xFF475569), fontWeight: FontWeight.bold)),
+          Text('BRIEF_DESCRIPTION',
+              style: GoogleFonts.spaceGrotesk(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white)),
+          Text('DESCRIBE_SITUATION_IN_FEW_WORDS',
+              style: GoogleFonts.jetBrainsMono(
+                  fontSize: 10,
+                  color: const Color(0xFF475569),
+                  fontWeight: FontWeight.bold)),
           const SizedBox(height: 48),
           TacticalContainer(
             child: TextField(
@@ -379,7 +467,8 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
               onChanged: (v) => _customDescription = v,
               decoration: InputDecoration(
                 hintText: 'EG: SMOKE ON 4TH FLOOR, NEED EVAC...',
-                hintStyle: GoogleFonts.jetBrainsMono(color: const Color(0xFF1E293B), fontSize: 12),
+                hintStyle: GoogleFonts.jetBrainsMono(
+                    color: const Color(0xFF1E293B), fontSize: 12),
                 border: InputBorder.none,
               ),
               maxLines: 4,
@@ -391,22 +480,30 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
               Expanded(
                 child: OutlinedButton(
                   onPressed: _prevStep,
-                  style: OutlinedButton.styleFrom(shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
-                  child: Text('BACK', style: GoogleFonts.jetBrainsMono(fontSize: 10)),
+                  style: OutlinedButton.styleFrom(
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero)),
+                  child: Text('BACK',
+                      style: GoogleFonts.jetBrainsMono(fontSize: 10)),
                 ),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
-                    if (_customDescription.isNotEmpty) setState(() => _step = 2);
+                    if (_customDescription.isNotEmpty) {
+                      setState(() => _step = 2);
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF3B82F6),
                     foregroundColor: Colors.white,
-                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero),
                   ),
-                  child: Text('CONTINUE', style: GoogleFonts.jetBrainsMono(fontSize: 10, fontWeight: FontWeight.bold)),
+                  child: Text('CONTINUE',
+                      style: GoogleFonts.jetBrainsMono(
+                          fontSize: 10, fontWeight: FontWeight.bold)),
                 ),
               ),
             ],
@@ -423,18 +520,30 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
         key: const ValueKey('step2'),
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('CONTACT_CHANNEL', style: GoogleFonts.spaceGrotesk(fontSize: 32, fontWeight: FontWeight.w900, color: Colors.white)),
-          Text('ENTER_LOCAL_CONTACT_FOR_COORDINATION', style: GoogleFonts.jetBrainsMono(fontSize: 10, color: const Color(0xFF475569), fontWeight: FontWeight.bold)),
+          Text('CONTACT_CHANNEL',
+              style: GoogleFonts.spaceGrotesk(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white)),
+          Text('ENTER_LOCAL_CONTACT_FOR_COORDINATION',
+              style: GoogleFonts.jetBrainsMono(
+                  fontSize: 10,
+                  color: const Color(0xFF475569),
+                  fontWeight: FontWeight.bold)),
           const SizedBox(height: 48),
           TacticalContainer(
             child: TextField(
               autofocus: true,
               keyboardType: TextInputType.phone,
-              style: GoogleFonts.jetBrainsMono(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900),
+              style: GoogleFonts.jetBrainsMono(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w900),
               onChanged: (v) => _phoneNumber = v,
               decoration: InputDecoration(
                 hintText: '+XX 000-000-0000',
-                hintStyle: GoogleFonts.jetBrainsMono(color: const Color(0xFF1E293B), fontSize: 16),
+                hintStyle: GoogleFonts.jetBrainsMono(
+                    color: const Color(0xFF1E293B), fontSize: 16),
                 border: InputBorder.none,
               ),
             ),
@@ -445,8 +554,11 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
               Expanded(
                 child: OutlinedButton(
                   onPressed: _prevStep,
-                  style: OutlinedButton.styleFrom(shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
-                  child: Text('BACK', style: GoogleFonts.jetBrainsMono(fontSize: 10)),
+                  style: OutlinedButton.styleFrom(
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero)),
+                  child: Text('BACK',
+                      style: GoogleFonts.jetBrainsMono(fontSize: 10)),
                 ),
               ),
               const SizedBox(width: 16),
@@ -458,9 +570,12 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF3B82F6),
                     foregroundColor: Colors.white,
-                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero),
                   ),
-                  child: Text('CONTINUE', style: GoogleFonts.jetBrainsMono(fontSize: 10, fontWeight: FontWeight.bold)),
+                  child: Text('CONTINUE',
+                      style: GoogleFonts.jetBrainsMono(
+                          fontSize: 10, fontWeight: FontWeight.bold)),
                 ),
               ),
             ],
@@ -477,8 +592,16 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
         key: const ValueKey('step3'),
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('PERSONNEL_COUNT', style: GoogleFonts.spaceGrotesk(fontSize: 32, fontWeight: FontWeight.w900, color: Colors.white)),
-          Text('ESTIMATE_VICTIMS_IN_VICINITY', style: GoogleFonts.jetBrainsMono(fontSize: 10, color: const Color(0xFF475569), fontWeight: FontWeight.bold)),
+          Text('PERSONNEL_COUNT',
+              style: GoogleFonts.spaceGrotesk(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white)),
+          Text('ESTIMATE_VICTIMS_IN_VICINITY',
+              style: GoogleFonts.jetBrainsMono(
+                  fontSize: 10,
+                  color: const Color(0xFF475569),
+                  fontWeight: FontWeight.bold)),
           const SizedBox(height: 48),
           GridView.count(
             shrinkWrap: true,
@@ -505,11 +628,15 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
                 },
                 child: TacticalContainer(
                   showGlow: _peopleCount == n && !isOther,
-                  borderColor: _peopleCount == n && !isOther ? const Color(0xFF3B82F6) : const Color(0xFF1F2937),
+                  borderColor: _peopleCount == n && !isOther
+                      ? const Color(0xFF3B82F6)
+                      : const Color(0xFF1F2937),
                   child: Center(
-                    child: Text(isOther ? 'OTHER' : (n == 10 ? '10+' : '$n'), 
-                      style: GoogleFonts.jetBrainsMono(fontSize: isOther ? 14 : 32, fontWeight: FontWeight.w900, color: Colors.white)
-                    ),
+                    child: Text(isOther ? 'OTHER' : (n == 10 ? '10+' : '$n'),
+                        style: GoogleFonts.jetBrainsMono(
+                            fontSize: isOther ? 14 : 32,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.white)),
                   ),
                 ),
               );
@@ -519,7 +646,11 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
           Center(
             child: TextButton(
               onPressed: _prevStep,
-              child: Text('← RETURN_TO_PREVIOUS', style: GoogleFonts.jetBrainsMono(fontSize: 10, color: const Color(0xFF475569), fontWeight: FontWeight.bold)),
+              child: Text('← RETURN_TO_PREVIOUS',
+                  style: GoogleFonts.jetBrainsMono(
+                      fontSize: 10,
+                      color: const Color(0xFF475569),
+                      fontWeight: FontWeight.bold)),
             ),
           ),
         ],
@@ -540,7 +671,10 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const LinearProgressIndicator(backgroundColor: Colors.transparent, color: Color(0xFF3B82F6), minHeight: 1),
+              const LinearProgressIndicator(
+                  backgroundColor: Colors.transparent,
+                  color: Color(0xFF3B82F6),
+                  minHeight: 1),
               const SizedBox(height: 24),
               Text(
                 "[ AI ] CHECKING_RUNTIME_PATH...\n"
@@ -548,10 +682,15 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
                 "[ AI ] API_PROXY=${aiDiagnostics['api_key_present'] == true ? 'AVAILABLE' : 'MISSING'}...\n"
                 "[ AI ] TFLITE=${aiDiagnostics['tflite_ready'] == true ? 'READY' : 'NOT_BUNDLED'}...\n"
                 "[ AI ] RUNNING_TRIAGE_ANALYSIS...",
-                style: GoogleFonts.jetBrainsMono(color: const Color(0xFF10B981), fontSize: 10, height: 1.8),
+                style: GoogleFonts.jetBrainsMono(
+                    color: const Color(0xFF10B981), fontSize: 10, height: 1.8),
               ),
               const SizedBox(height: 24),
-              const Text('PROCESSING_UPLINK...', style: TextStyle(color: Color(0xFF3B82F6), fontSize: 10, fontWeight: FontWeight.bold)),
+              const Text('PROCESSING_UPLINK...',
+                  style: TextStyle(
+                      color: Color(0xFF3B82F6),
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold)),
             ],
           ),
         ),
@@ -561,9 +700,12 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
 
   Widget _buildReviewUI() {
     final severity = _inferenceResult!['severity'] as IncidentSeverity;
-    final color = severity == IncidentSeverity.critical ? const Color(0xFFF43F5E) : const Color(0xFF3B82F6);
+    final color = severity == IncidentSeverity.critical
+        ? const Color(0xFFF43F5E)
+        : const Color(0xFF3B82F6);
     final truthScore = _asDouble(_inferenceResult!['truth_score'])?.round();
-    final runtimeMode = (_inferenceResult!['runtime_mode'] ?? 'UNKNOWN').toString();
+    final runtimeMode =
+        (_inferenceResult!['runtime_mode'] ?? 'UNKNOWN').toString();
     final aiSource = (_inferenceResult!['ai_source'] ?? 'UNKNOWN').toString();
     final tfliteStatus = _inferenceResult!['tflite_ready'] == true
         ? 'READY'
@@ -583,26 +725,47 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('LOCAL_INFERENCE_DATA', style: GoogleFonts.jetBrainsMono(fontSize: 8, color: color, fontWeight: FontWeight.bold)),
-                    Text('ZONE: Z-04', style: GoogleFonts.jetBrainsMono(fontSize: 8, color: color, fontWeight: FontWeight.bold)),
+                    Text('LOCAL_INFERENCE_DATA',
+                        style: GoogleFonts.jetBrainsMono(
+                            fontSize: 8,
+                            color: color,
+                            fontWeight: FontWeight.bold)),
+                    Text('ZONE: Z-04',
+                        style: GoogleFonts.jetBrainsMono(
+                            fontSize: 8,
+                            color: color,
+                            fontWeight: FontWeight.bold)),
                   ],
                 ),
                 const SizedBox(height: 16),
-                Text(_selectedCode == 'OT' ? 'CUSTOM_DESCRIPTION' : _inferenceResult!['category'], 
-                  style: GoogleFonts.spaceGrotesk(fontSize: 24, fontWeight: FontWeight.w900, color: Colors.white)
-                ),
+                Text(
+                    _selectedCode == 'OT'
+                        ? 'CUSTOM_DESCRIPTION'
+                        : _inferenceResult!['category'],
+                    style: GoogleFonts.spaceGrotesk(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white)),
                 if (_phoneNumber.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: 4.0),
-                    child: Text('PHONE: $_phoneNumber', style: GoogleFonts.jetBrainsMono(fontSize: 10, color: const Color(0xFF3B82F6))),
+                    child: Text('PHONE: $_phoneNumber',
+                        style: GoogleFonts.jetBrainsMono(
+                            fontSize: 10, color: const Color(0xFF3B82F6))),
                   ),
                 if (_selectedCode == 'OT')
-                   Padding(
-                     padding: const EdgeInsets.only(top: 8.0),
-                     child: Text('"$_customDescription"', style: GoogleFonts.jetBrainsMono(fontSize: 10, color: const Color(0xFF10B981), fontStyle: FontStyle.italic)),
-                   ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text('"$_customDescription"',
+                        style: GoogleFonts.jetBrainsMono(
+                            fontSize: 10,
+                            color: const Color(0xFF10B981),
+                            fontStyle: FontStyle.italic)),
+                  ),
                 const SizedBox(height: 12),
-                Text('$_peopleCount PERSONNEL_REPORTED', style: GoogleFonts.jetBrainsMono(fontSize: 12, color: const Color(0xFF475569))),
+                Text('$_peopleCount PERSONNEL_REPORTED',
+                    style: GoogleFonts.jetBrainsMono(
+                        fontSize: 12, color: const Color(0xFF475569))),
               ],
             ),
           ),
@@ -625,14 +788,17 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
                   spacing: 12,
                   runSpacing: 12,
                   children: [
-                    _buildMetricPill('SOURCE', aiSource, const Color(0xFF10B981)),
-                    _buildMetricPill('MODE', runtimeMode, const Color(0xFF3B82F6)),
+                    _buildMetricPill(
+                        'SOURCE', aiSource, const Color(0xFF10B981)),
+                    _buildMetricPill(
+                        'MODE', runtimeMode, const Color(0xFF3B82F6)),
                     _buildMetricPill(
                       'TRUTH_SCORE',
                       truthScore == null ? 'N/A' : '$truthScore%',
                       const Color(0xFFF59E0B),
                     ),
-                    _buildMetricPill('TFLITE', tfliteStatus, const Color(0xFFF43F5E)),
+                    _buildMetricPill(
+                        'TFLITE', tfliteStatus, const Color(0xFFF43F5E)),
                   ],
                 ),
                 const SizedBox(height: 14),
@@ -752,18 +918,94 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
           ),
           const SizedBox(height: 24),
           TacticalContainer(
+            borderColor: _bridgeMode == BridgeMode.blackout
+                ? const Color(0xFFF43F5E)
+                : (_bridgeMode == BridgeMode.ultraLight
+                    ? const Color(0xFFF59E0B)
+                    : const Color(0xFF10B981)),
+            showGlow: _bridgeMode != BridgeMode.nominal,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('ENCODED_HEX_DATA', style: GoogleFonts.jetBrainsMono(fontSize: 8, color: const Color(0xFF1E293B), fontWeight: FontWeight.bold)),
-                    Text('12 BYTES', style: GoogleFonts.jetBrainsMono(fontSize: 8, color: const Color(0xFF475569))),
+                    Text(
+                      'DELIVERY_PATH',
+                      style: GoogleFonts.jetBrainsMono(
+                        fontSize: 8,
+                        color: const Color(0xFF94A3B8),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      _bridgeLabel,
+                      style: GoogleFonts.jetBrainsMono(
+                        fontSize: 8,
+                        color: _bridgeMode == BridgeMode.blackout
+                            ? const Color(0xFFF43F5E)
+                            : (_bridgeMode == BridgeMode.ultraLight
+                                ? const Color(0xFFF59E0B)
+                                : const Color(0xFF10B981)),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 12),
-                Text('PKT_${_selectedCode}_0${_peopleCount}_${severity.name[0].toUpperCase()}_8A2F9B', style: GoogleFonts.jetBrainsMono(fontSize: 14, color: const Color(0xFF3B82F6), fontWeight: FontWeight.bold, letterSpacing: 1)),
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    _buildMetricPill(
+                        'LINK_PROFILE', _bridgeLabel, const Color(0xFF3B82F6)),
+                    _buildMetricPill(
+                        'ROUTE', _bridgeRoute, const Color(0xFFF59E0B)),
+                    _buildMetricPill(
+                      'QUEUE_DEPTH',
+                      '${FirestoreService().offlineQueueLength}',
+                      const Color(0xFFF43F5E),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  _bridgeSummary,
+                  style: GoogleFonts.jetBrainsMono(
+                    fontSize: 10,
+                    color: const Color(0xFF94A3B8),
+                    height: 1.6,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          TacticalContainer(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('ENCODED_HEX_DATA',
+                        style: GoogleFonts.jetBrainsMono(
+                            fontSize: 8,
+                            color: const Color(0xFF1E293B),
+                            fontWeight: FontWeight.bold)),
+                    Text('12 BYTES',
+                        style: GoogleFonts.jetBrainsMono(
+                            fontSize: 8, color: const Color(0xFF475569))),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                    'PKT_${_selectedCode}_0${_peopleCount}_${severity.name[0].toUpperCase()}_8A2F9B',
+                    style: GoogleFonts.jetBrainsMono(
+                        fontSize: 14,
+                        color: const Color(0xFF3B82F6),
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1)),
               ],
             ),
           ),
@@ -776,11 +1018,18 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF3B82F6),
                 foregroundColor: Colors.white,
-                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.zero),
               ),
-              child: _isSyncing 
-                ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                : Text('UPLINK_TO_COMMAND_GRID', style: GoogleFonts.spaceGrotesk(fontWeight: FontWeight.w900, letterSpacing: 1)),
+              child: _isSyncing
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2, color: Colors.white))
+                  : Text('UPLINK_TO_COMMAND_GRID',
+                      style: GoogleFonts.spaceGrotesk(
+                          fontWeight: FontWeight.w900, letterSpacing: 1)),
             ),
           ),
           const SizedBox(height: 12),
@@ -790,7 +1039,11 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
                 _resetLocationLock();
                 _step = 0;
               }),
-              child: Text('ABORT_AND_RETRY', style: GoogleFonts.jetBrainsMono(fontSize: 10, color: const Color(0xFF475569), fontWeight: FontWeight.bold)),
+              child: Text('ABORT_AND_RETRY',
+                  style: GoogleFonts.jetBrainsMono(
+                      fontSize: 10,
+                      color: const Color(0xFF475569),
+                      fontWeight: FontWeight.bold)),
             ),
           ),
         ],
@@ -799,59 +1052,132 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
   }
 
   Widget _buildSuccessUI() {
+    final dispatchResult = _lastDispatchResult;
+    final wasBuffered = dispatchResult?.outcome == SyncDispatchOutcome.buffered;
+    final statusHeadline = wasBuffered ? 'BUFFERED_OFFLINE' : 'SIGNAL_UPLINKED';
+    final statusCopy = wasBuffered
+        ? 'No network path. Report stored in local cache and will relay via mesh bridge automatically.'
+        : 'Packet synchronized through Firestore and Google Cloud.';
+    final queueCount =
+        dispatchResult?.queuedCount ?? FirestoreService().offlineQueueLength;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(40.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('[ TRANSMISSION_COMPLETE ]', style: TextStyle(color: Color(0xFF10B981), fontWeight: FontWeight.bold, fontSize: 10)),
+            const Text('[ TRANSMISSION_COMPLETE ]',
+                style: TextStyle(
+                    color: Color(0xFF10B981),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 10)),
             const SizedBox(height: 24),
-            Text(
-              _bridgeMode == BridgeMode.blackout ? 'BUFFERED_OFFLINE' : 'SIGNAL_UPLINKED', 
-              style: GoogleFonts.spaceGrotesk(fontSize: 32, fontWeight: FontWeight.w900, color: Colors.white)
-            ),
+            Text(statusHeadline,
+                style: GoogleFonts.spaceGrotesk(
+                    fontSize: 32,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white)),
             const SizedBox(height: 8),
             Text(
-              _bridgeMode == BridgeMode.blackout 
-                ? 'No network path. Report stored in local cache for mesh relay.' 
-                : 'Packet synchronized through Firestore and Google Cloud.',
+              statusCopy,
               textAlign: TextAlign.center,
-              style: GoogleFonts.jetBrainsMono(fontSize: 10, color: const Color(0xFF475569)),
+              style: GoogleFonts.jetBrainsMono(
+                  fontSize: 10, color: const Color(0xFF475569)),
             ),
+            if (wasBuffered) ...[
+              const SizedBox(height: 12),
+              Text(
+                'QUEUE_DEPTH // $queueCount PENDING',
+                style: GoogleFonts.jetBrainsMono(
+                  fontSize: 10,
+                  color: const Color(0xFFF59E0B),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
             const SizedBox(height: 32),
             TacticalContainer(
-              borderColor: const Color(0xFF10B981),
+              borderColor: wasBuffered
+                  ? const Color(0xFFF59E0B)
+                  : const Color(0xFF10B981),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('[ DUAL_MODEL_LOCAL_ANALYSIS ]', style: GoogleFonts.jetBrainsMono(color: const Color(0xFF10B981), fontSize: 8, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 12),
                   Text(
-                    _inferenceResult?['reasoning']?.toString() ?? 'No reasoning trace.',
-                    style: GoogleFonts.jetBrainsMono(fontSize: 10, color: const Color(0xFF94A3B8), height: 1.5, fontStyle: FontStyle.italic),
+                    wasBuffered
+                        ? '[ LOCAL_QUEUE_RELAY ]'
+                        : '[ DUAL_MODEL_LOCAL_ANALYSIS ]',
+                    style: GoogleFonts.jetBrainsMono(
+                      color: wasBuffered
+                          ? const Color(0xFFF59E0B)
+                          : const Color(0xFF10B981),
+                      fontSize: 8,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  if (dispatchResult != null) ...[
+                    Text(
+                      'SYNC_MODE: ${dispatchResult.syncMode}',
+                      style: GoogleFonts.jetBrainsMono(
+                        fontSize: 9,
+                        color: wasBuffered
+                            ? const Color(0xFFFDE68A)
+                            : const Color(0xFF86EFAC),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                  Text(
+                    _inferenceResult?['reasoning']?.toString() ??
+                        'No reasoning trace.',
+                    style: GoogleFonts.jetBrainsMono(
+                        fontSize: 10,
+                        color: const Color(0xFF94A3B8),
+                        height: 1.5,
+                        fontStyle: FontStyle.italic),
                   ),
                   const SizedBox(height: 12),
                   if (_inferenceResult?['processing_trace'] != null)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('[ TACTICAL_INFERENCE_TRACE ]', style: GoogleFonts.jetBrainsMono(color: const Color(0xFF3B82F6), fontSize: 8, fontWeight: FontWeight.bold)),
+                        Text('[ TACTICAL_INFERENCE_TRACE ]',
+                            style: GoogleFonts.jetBrainsMono(
+                                color: const Color(0xFF3B82F6),
+                                fontSize: 8,
+                                fontWeight: FontWeight.bold)),
                         const SizedBox(height: 4),
-                        ...(_inferenceResult!['processing_trace'] as List).map((step) => Padding(
-                          padding: const EdgeInsets.only(bottom: 2),
-                          child: Text('>> $step', style: GoogleFonts.jetBrainsMono(fontSize: 7, color: const Color(0xFF3B82F6).withValues(alpha: 0.6))),
-                        )),
+                        ...(_inferenceResult!['processing_trace'] as List)
+                            .map((step) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 2),
+                                  child: Text('>> $step',
+                                      style: GoogleFonts.jetBrainsMono(
+                                          fontSize: 7,
+                                          color: const Color(0xFF3B82F6)
+                                              .withValues(alpha: 0.6))),
+                                )),
                       ],
                     ),
                   const SizedBox(height: 16),
                   const Divider(color: Color(0xFF10B981), thickness: 0.2),
                   const SizedBox(height: 8),
-                  Text('[ AI_AUTONOMOUS_GUIDANCE ]', style: GoogleFonts.jetBrainsMono(color: const Color(0xFFF59E0B), fontSize: 8, fontWeight: FontWeight.bold)),
+                  Text('[ AI_AUTONOMOUS_GUIDANCE ]',
+                      style: GoogleFonts.jetBrainsMono(
+                          color: const Color(0xFFF59E0B),
+                          fontSize: 8,
+                          fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
                   Text(
-                    _inferenceResult?['guidance']?.toString() ?? 'Stay low and conserve battery. Rescuers are coordinating.',
-                    style: GoogleFonts.jetBrainsMono(fontSize: 11, color: const Color(0xFFFDE68A), fontWeight: FontWeight.bold, height: 1.4),
+                    _inferenceResult?['guidance']?.toString() ??
+                        'Stay low and conserve battery. Rescuers are coordinating.',
+                    style: GoogleFonts.jetBrainsMono(
+                        fontSize: 11,
+                        color: const Color(0xFFFDE68A),
+                        fontWeight: FontWeight.bold,
+                        height: 1.4),
                   ),
                 ],
               ),
@@ -865,9 +1191,12 @@ class _VictimFlowPageState extends State<VictimFlowPage> {
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.white,
                   side: const BorderSide(color: Color(0xFF1F2937)),
-                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero),
                 ),
-                child: Text('ACKNOWLEDGE', style: GoogleFonts.jetBrainsMono(fontSize: 10, fontWeight: FontWeight.bold)),
+                child: Text('ACKNOWLEDGE',
+                    style: GoogleFonts.jetBrainsMono(
+                        fontSize: 10, fontWeight: FontWeight.bold)),
               ),
             ),
           ],
@@ -929,16 +1258,24 @@ class _CustomCountDialogState extends State<_CustomCountDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('CUSTOM_COUNT_ENTRY', style: GoogleFonts.jetBrainsMono(fontSize: 10, fontWeight: FontWeight.bold, color: const Color(0xFF3B82F6))),
+            Text('CUSTOM_COUNT_ENTRY',
+                style: GoogleFonts.jetBrainsMono(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF3B82F6))),
             const SizedBox(height: 16),
             TextField(
               controller: _controller,
               keyboardType: TextInputType.number,
               autofocus: true,
-              style: GoogleFonts.jetBrainsMono(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900),
+              style: GoogleFonts.jetBrainsMono(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w900),
               decoration: InputDecoration(
                 hintText: '00',
-                hintStyle: GoogleFonts.jetBrainsMono(color: const Color(0xFF1E293B)),
+                hintStyle:
+                    GoogleFonts.jetBrainsMono(color: const Color(0xFF1E293B)),
                 border: InputBorder.none,
               ),
             ),
@@ -948,7 +1285,9 @@ class _CustomCountDialogState extends State<_CustomCountDialog> {
               children: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: Text('CANCEL', style: GoogleFonts.jetBrainsMono(fontSize: 10, color: const Color(0xFF475569))),
+                  child: Text('CANCEL',
+                      style: GoogleFonts.jetBrainsMono(
+                          fontSize: 10, color: const Color(0xFF475569))),
                 ),
                 const SizedBox(width: 16),
                 ElevatedButton(
@@ -961,9 +1300,12 @@ class _CustomCountDialogState extends State<_CustomCountDialog> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF3B82F6),
                     foregroundColor: Colors.white,
-                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero),
                   ),
-                  child: Text('CONFIRM', style: GoogleFonts.jetBrainsMono(fontSize: 10, fontWeight: FontWeight.bold)),
+                  child: Text('CONFIRM',
+                      style: GoogleFonts.jetBrainsMono(
+                          fontSize: 10, fontWeight: FontWeight.bold)),
                 ),
               ],
             ),

@@ -6,6 +6,23 @@ import '../models/incident.dart';
 import '../models/rescue_team.dart';
 import '../utils/packet_shredder.dart';
 
+enum SyncDispatchOutcome {
+  uplinked,
+  buffered,
+}
+
+class SyncDispatchResult {
+  const SyncDispatchResult({
+    required this.outcome,
+    required this.queuedCount,
+    required this.syncMode,
+  });
+
+  final SyncDispatchOutcome outcome;
+  final int queuedCount;
+  final String syncMode;
+}
+
 /// FIRESTORE SERVICE — SYNC BRIDGE NATIVE
 /// Handles the "Final Bridge" synchronization using Firebase Spark Plan (Direct Write).
 class FirestoreService {
@@ -42,7 +59,8 @@ class FirestoreService {
   List<RescueTeam> _teamRoster = const [
     RescueTeam(id: 'STRIKE_ALPHA', displayName: 'STRIKE_ALPHA', capacity: 6),
     RescueTeam(id: 'RESCUE_DELTA', displayName: 'RESCUE_DELTA', capacity: 5),
-    RescueTeam(id: 'MEDICAL_SIERRA', displayName: 'MEDICAL_SIERRA', capacity: 4),
+    RescueTeam(
+        id: 'MEDICAL_SIERRA', displayName: 'MEDICAL_SIERRA', capacity: 4),
     RescueTeam(id: 'HEAVY_BRAVO', displayName: 'HEAVY_BRAVO', capacity: 8),
   ];
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _incidentMirrorSub;
@@ -59,13 +77,12 @@ class FirestoreService {
 
   /// Live stream of incidents directly from Firestore.
   Stream<List<Incident>> get incidentsStream => _db
-      .collection('incidents')
-      .orderBy('ts', descending: true)
-      .snapshots()
-      .map((snapshot) {
-        _cachedIncidents = snapshot.docs
-            .map((doc) => Incident.fromJson(doc.data()))
-            .toList();
+          .collection('incidents')
+          .orderBy('ts', descending: true)
+          .snapshots()
+          .map((snapshot) {
+        _cachedIncidents =
+            snapshot.docs.map((doc) => Incident.fromJson(doc.data())).toList();
         _publishTeamAvailability();
         return _cachedIncidents;
       });
@@ -77,6 +94,7 @@ class FirestoreService {
   double get syncStability => 99.98;
   Map<String, int> get teamUnits => Map.unmodifiable(_currentTeamUnits);
   List<RescueTeam> get teamRoster => List.unmodifiable(_teamRoster);
+  int get offlineQueueLength => _offlineQueue.length;
 
   Map<String, dynamic> _serializeIncident(
     Incident incident, {
@@ -114,7 +132,8 @@ class FirestoreService {
     );
     // Retry persisted offline queue every 10 seconds
     _offlineRetryTimer?.cancel();
-    _offlineRetryTimer = Timer.periodic(const Duration(seconds: 10), (_) => _processOfflineQueue());
+    _offlineRetryTimer = Timer.periodic(
+        const Duration(seconds: 10), (_) => _processOfflineQueue());
   }
 
   // ------------------------------------------------------------------
@@ -129,7 +148,9 @@ class FirestoreService {
     final demoIncidents = [
       {
         'id': 'DEMO-001',
-        'ts': DateTime.now().subtract(const Duration(minutes: 12)).millisecondsSinceEpoch,
+        'ts': DateTime.now()
+            .subtract(const Duration(minutes: 12))
+            .millisecondsSinceEpoch,
         'severity': 'critical',
         'category': 'TRAPPED',
         'category_code': 'TU',
@@ -140,7 +161,8 @@ class FirestoreService {
         'confidence': 0.95,
         'status': 'active',
         'claimed_by': null,
-        'description': 'Structural collapse — 3 people trapped under debris on 3rd floor.',
+        'description':
+            'Structural collapse — 3 people trapped under debris on 3rd floor.',
         'phone': '+1 202-555-0101',
         'rec_responders': 6,
         'rec_team_type': 'HEAVY_RESCUE',
@@ -150,7 +172,8 @@ class FirestoreService {
         'data': {
           'ai_source': 'SEED_SCENARIO',
           'people_count': 3,
-          'reasoning': 'Seeded trapped-person incident for dashboard validation.',
+          'reasoning':
+              'Seeded trapped-person incident for dashboard validation.',
           'sensor_conflict': false,
           'triage_code': 'ALPHA',
           'truth_score': 92,
@@ -160,7 +183,9 @@ class FirestoreService {
       },
       {
         'id': 'DEMO-002',
-        'ts': DateTime.now().subtract(const Duration(minutes: 27)).millisecondsSinceEpoch,
+        'ts': DateTime.now()
+            .subtract(const Duration(minutes: 27))
+            .millisecondsSinceEpoch,
         'severity': 'urgent',
         'category': 'FIRE',
         'category_code': 'FI',
@@ -173,9 +198,8 @@ class FirestoreService {
         'claimed_by': 'STRIKE_ALPHA',
         'claimed_team_id': 'STRIKE_ALPHA',
         'claimed_at': DateTime.now().millisecondsSinceEpoch,
-        'auto_resolve_at': DateTime.now()
-            .add(_autoResolveWindow)
-            .millisecondsSinceEpoch,
+        'auto_resolve_at':
+            DateTime.now().add(_autoResolveWindow).millisecondsSinceEpoch,
         'description': null,
         'phone': '+1 202-555-0199',
         'rec_responders': 4,
@@ -196,7 +220,9 @@ class FirestoreService {
       },
       {
         'id': 'DEMO-003',
-        'ts': DateTime.now().subtract(const Duration(minutes: 45)).millisecondsSinceEpoch,
+        'ts': DateTime.now()
+            .subtract(const Duration(minutes: 45))
+            .millisecondsSinceEpoch,
         'severity': 'standard',
         'category': 'GENERAL',
         'category_code': 'GE',
@@ -216,12 +242,14 @@ class FirestoreService {
         'rec_responders': 2,
         'rec_team_type': 'STANDARD_RESPONSE',
         'ai_source': 'SEED_SCENARIO',
-        'reasoning': 'Seeded lower-priority support request for resolved-state testing.',
+        'reasoning':
+            'Seeded lower-priority support request for resolved-state testing.',
         'truth_score': 71,
         'data': {
           'ai_source': 'SEED_SCENARIO',
           'people_count': 2,
-          'reasoning': 'Seeded lower-priority support request for resolved-state testing.',
+          'reasoning':
+              'Seeded lower-priority support request for resolved-state testing.',
           'sensor_conflict': false,
           'triage_code': 'CHARLIE',
           'truth_score': 71,
@@ -244,7 +272,7 @@ class FirestoreService {
   // ------------------------------------------------------------------
   // Sync a new SOS packet — direct Spark write, queue on failure
   // ------------------------------------------------------------------
-  Future<void> syncSOSPacket(Incident incident) async {
+  Future<SyncDispatchResult> syncSOSPacket(Incident incident) async {
     try {
       print('☁️ [SyncBridge] Pushing packet (Spark Mode): ${incident.id}');
       final shredded = PacketShredder.shred(incident);
@@ -259,10 +287,25 @@ class FirestoreService {
           );
 
       print('✅ [SyncBridge] Spark Sync Successful.');
+      return SyncDispatchResult(
+        outcome: SyncDispatchOutcome.uplinked,
+        queuedCount: _offlineQueue.length,
+        syncMode: 'SPARK_DIRECT_UPLINK',
+      );
     } catch (e) {
       print('⚠️ [SyncBridge] Sync failed — saving to Offline Queue: $e');
-      _offlineQueue.add(incident);
+      _offlineQueue.add(
+        incident.copyWith(
+          syncMode: 'OFFLINE_QUEUED',
+          synced: false,
+        ),
+      );
       await _saveOfflineQueue();
+      return SyncDispatchResult(
+        outcome: SyncDispatchOutcome.buffered,
+        queuedCount: _offlineQueue.length,
+        syncMode: 'OFFLINE_QUEUED',
+      );
     }
   }
 
@@ -272,7 +315,8 @@ class FirestoreService {
   Future<void> _processOfflineQueue() async {
     if (_offlineQueue.isEmpty) return;
 
-    print('🔄 [SyncBridge] Retrying offline queue (${_offlineQueue.length} items)...');
+    print(
+        '🔄 [SyncBridge] Retrying offline queue (${_offlineQueue.length} items)...');
     final toRetry = List<Incident>.from(_offlineQueue);
 
     for (final incident in toRetry) {
@@ -286,7 +330,8 @@ class FirestoreService {
         _offlineQueue.removeWhere((i) => i.id == incident.id);
         print('✅ [SyncBridge] Recovered incident: ${incident.id}');
       } catch (e) {
-        print('❌ [SyncBridge] Recovery failed for ${incident.id}: Still offline.');
+        print(
+            '❌ [SyncBridge] Recovery failed for ${incident.id}: Still offline.');
         break; // Stop on first failure — network not yet available
       }
     }
@@ -303,19 +348,19 @@ class FirestoreService {
         .orderBy('ts', descending: true)
         .snapshots()
         .map((snapshot) {
-          final incidents = snapshot.docs
-              .map((doc) => Incident.fromJson(doc.data()))
-              .toList();
-          _cachedIncidents = incidents;
-          _publishTeamAvailability();
-          return incidents;
-        });
+      final incidents =
+          snapshot.docs.map((doc) => Incident.fromJson(doc.data())).toList();
+      _cachedIncidents = incidents;
+      _publishTeamAvailability();
+      return incidents;
+    });
   }
 
   // ------------------------------------------------------------------
   // Dispatch: claim an incident for a rescue team
   // ------------------------------------------------------------------
-  Future<bool> claimIncident(String id, String teamName, int responderCount) async {
+  Future<bool> claimIncident(
+      String id, String teamName, int responderCount) async {
     try {
       final team = _findTeamById(teamName);
       final claimedAt = DateTime.now();
@@ -324,9 +369,8 @@ class FirestoreService {
         'claimed_by': team?.displayName ?? teamName,
         'claimed_team_id': teamName,
         'claimed_at': claimedAt.millisecondsSinceEpoch,
-        'auto_resolve_at': claimedAt
-            .add(_autoResolveWindow)
-            .millisecondsSinceEpoch,
+        'auto_resolve_at':
+            claimedAt.add(_autoResolveWindow).millisecondsSinceEpoch,
         'resolved_at': null,
         'rec_responders': responderCount,
       });
@@ -373,8 +417,10 @@ class FirestoreService {
       if (raw == null || raw.isEmpty) return;
 
       final List<dynamic> decoded = jsonDecode(raw);
-      _offlineQueue.addAll(decoded.map((j) => Incident.fromJson(j as Map<String, dynamic>)));
-      print('📂 [OfflineQueue] Restored ${_offlineQueue.length} queued incident(s) from storage.');
+      _offlineQueue.addAll(
+          decoded.map((j) => Incident.fromJson(j as Map<String, dynamic>)));
+      print(
+          '📂 [OfflineQueue] Restored ${_offlineQueue.length} queued incident(s) from storage.');
     } catch (e) {
       print('⚠️ [OfflineQueue] Failed to restore queue: $e');
     }
@@ -406,7 +452,8 @@ class FirestoreService {
 
     try {
       final prefs = await SharedPreferences.getInstance();
-      final encoded = jsonEncode(_teamRoster.map((team) => team.toJson()).toList());
+      final encoded =
+          jsonEncode(_teamRoster.map((team) => team.toJson()).toList());
       await prefs.setString(_teamsKey, encoded);
     } catch (e) {
       print('⚠️ [Teams] Failed to persist team roster: $e');
@@ -421,13 +468,13 @@ class FirestoreService {
         .snapshots()
         .listen(
       (snapshot) {
-        _cachedIncidents = snapshot.docs
-            .map((doc) => Incident.fromJson(doc.data()))
-            .toList();
+        _cachedIncidents =
+            snapshot.docs.map((doc) => Incident.fromJson(doc.data())).toList();
         _publishTeamAvailability();
       },
       onError: (Object error) {
-        print('⚠️ [Units] Failed to mirror incidents for unit availability: $error');
+        print(
+            '⚠️ [Units] Failed to mirror incidents for unit availability: $error');
       },
     );
   }
@@ -494,49 +541,10 @@ class FirestoreService {
       }
     }
   }
-}
 
-      final reservedUnits = incident.recResponders ?? 0;
-      final remainingUnits =
-          (nextAvailability[teamName]! - reservedUnits).clamp(0, 999);
-      nextAvailability[teamName] = remainingUnits.toInt();
-    }
-
-    _currentTeamUnits = nextAvailability;
-    if (!_unitsController.isClosed) {
-      _unitsController.add(Map.unmodifiable(_currentTeamUnits));
-    }
-  }
-
-  void _publishTeamRoster() {
-    if (!_teamRosterController.isClosed) {
-      _teamRosterController.add(List<RescueTeam>.unmodifiable(_teamRoster));
-    }
-  }
-
-  RescueTeam? _findTeamById(String id) {
-    for (final team in _teamRoster) {
-      if (team.id == id) return team;
-    }
-    return null;
-  }
-
-  Future<void> _syncClaimLifecycle() async {
-    final now = DateTime.now();
-    final dueIncidents = _cachedIncidents.where((incident) {
-      return incident.status == IncidentStatus.claimed &&
-          incident.autoResolveAt != null &&
-          !incident.autoResolveAt!.isAfter(now) &&
-          !_autoResolvingIds.contains(incident.id);
-    }).toList();
-
-    for (final incident in dueIncidents) {
-      _autoResolvingIds.add(incident.id);
-      try {
-        await resolveIncident(incident.id);
-      } finally {
-        _autoResolvingIds.remove(incident.id);
-      }
-    }
-  }
+  // ------------------------------------------------------------------
+  // Command Grid Aliases
+  // ------------------------------------------------------------------
+  Stream<List<Incident>> get tacticalIncidentsStream => incidentsStream;
+  List<Incident> getMergedIncidents() => getIncidents();
 }

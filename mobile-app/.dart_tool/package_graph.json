@@ -17,7 +17,8 @@
         "http",
         "image_picker",
         "provider",
-        "shared_preferences"
+        "shared_preferences",
+        "tflite_flutter"
       ],
       "devDependencies": [
         "flutter_lints",
@@ -61,6 +62,17 @@
         "image_picker_macos",
         "image_picker_platform_interface",
         "image_picker_windows"
+      ]
+    },
+    {
+      "name": "tflite_flutter",
+      "version": "0.10.4",
+      "dependencies": [
+        "ffi",
+        "flutter",
+        "path",
+        "plugin_platform_interface",
+        "quiver"
       ]
     },
     {
@@ -320,6 +332,18 @@
         "flutter_plugin_android_lifecycle",
         "image_picker_platform_interface"
       ]
+    },
+    {
+      "name": "plugin_platform_interface",
+      "version": "2.1.8",
+      "dependencies": [
+        "meta"
+      ]
+    },
+    {
+      "name": "ffi",
+      "version": "2.2.0",
+      "dependencies": []
     },
     {
       "name": "geolocator_windows",
@@ -607,13 +631,6 @@
       ]
     },
     {
-      "name": "plugin_platform_interface",
-      "version": "2.1.8",
-      "dependencies": [
-        "meta"
-      ]
-    },
-    {
       "name": "cross_file",
       "version": "0.3.5+2",
       "dependencies": [
@@ -753,11 +770,6 @@
       "dependencies": []
     },
     {
-      "name": "ffi",
-      "version": "2.2.0",
-      "dependencies": []
-    },
-    {
       "name": "platform",
       "version": "3.1.6",
       "dependencies": []
@@ -888,6 +900,13 @@
         "collection",
         "meta",
         "pub_semver"
+      ]
+    },
+    {
+      "name": "quiver",
+      "version": "3.2.2",
+      "dependencies": [
+        "matcher"
       ]
     }
   ],
